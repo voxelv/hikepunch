@@ -6,9 +6,14 @@ import com.derelictech.hikepunch.HikePunch;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 
 public class DesktopLauncher {
+
+    private static boolean repackTextures = false;
+
 	public static void main (String[] arg) {
 
-        TexturePacker.process(".", "../packs", "hikepunch.pack");
+        if(repackTextures) {
+            TexturePacker.process(".", "../packs", "pack");
+        }
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 800;
