@@ -59,7 +59,6 @@ public class Level {
                         System.out.println("start");
                         if (playerSprite == null) {
                             playerSprite = new PlayerSprite(x, y, scale);
-                            gameObjects.add(playerSprite);
                         }
                         break;
                     case grassColor:
