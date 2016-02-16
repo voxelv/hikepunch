@@ -5,6 +5,6 @@ package com.derelictech.hikepunch;
  */
 public class Constants {
     public static final float TILE_PIXEL_WIDTH = 16f;
-    public static final float VIEWPORT_WIDTH = 8f;
-    public static final float VIEWPORT_HEIGHT = 5f;
+    public static final float VIEWPORT_WIDTH = 16f;
+    public static final float VIEWPORT_HEIGHT = 16f;
 }
