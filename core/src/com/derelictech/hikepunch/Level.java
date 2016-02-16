@@ -16,6 +16,8 @@ public class Level {
 
     private float scale;
     private PlayerSprite playerSprite;
+    private int layoutWidth;
+    private int layoutHeight;
 
     private Array<AbstractGameSprite> gameObjects;
 
@@ -39,18 +41,20 @@ public class Level {
         gameObjects.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scale, scale));
 
         Pixmap levelLayout = new Pixmap(Gdx.files.internal("../level/" + filename));
+        layoutWidth = levelLayout.getWidth();
+        layoutHeight = levelLayout.getHeight();
         int currentPixel;
-        for(int layoutX = 0; layoutX < levelLayout.getWidth();  layoutX++) {
-            for(int layoutY = 0; layoutY < levelLayout.getHeight(); layoutY++) {
+        for(int layoutX = 0; layoutX < layoutWidth;  layoutX++) {
+            for(int layoutY = 0; layoutY < layoutHeight; layoutY++) {
 
                 currentPixel = levelLayout.getPixel(layoutX, layoutY);
                 float x = (layoutX * (Constants.TILE_PIXEL_WIDTH * scale));
                 float y = Gdx.graphics.getHeight() - ((layoutY + 1) * (Constants.TILE_PIXEL_WIDTH * scale));
 
-                if((levelLayout.getHeight() * Constants.TILE_PIXEL_WIDTH * scale) > Gdx.graphics.getHeight()) {
-                    y += (levelLayout.getHeight() * Constants.TILE_PIXEL_WIDTH * scale) - Gdx.graphics.getHeight();
+                if((layoutHeight * Constants.TILE_PIXEL_WIDTH * scale) > Gdx.graphics.getHeight()) {
+                    y += (layoutHeight * Constants.TILE_PIXEL_WIDTH * scale) - Gdx.graphics.getHeight();
                 }
-                else y -= Gdx.graphics.getHeight() - (levelLayout.getHeight() * Constants.TILE_PIXEL_WIDTH * scale);
+                else y -= Gdx.graphics.getHeight() - (layoutHeight * Constants.TILE_PIXEL_WIDTH * scale);
 
                 AbstractGameSprite s;
 
@@ -91,6 +95,14 @@ public class Level {
         if(playerSprite == null) {
             throw new NullPointerException("No Player Spawn in Level: " + filename);
         }
+    }
+
+    public int getLayoutWidth() {
+        return layoutWidth;
+    }
+
+    public int getLayoutHeight() {
+        return layoutHeight;
     }
 
     public void renderGameObjects(SpriteBatch batch) {

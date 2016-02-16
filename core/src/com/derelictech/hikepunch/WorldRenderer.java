@@ -38,6 +38,9 @@ public class WorldRenderer implements Disposable{
         if(xpos < camera.viewportWidth/2) {
             xpos = camera.viewportWidth/2;
         }
+        if(xpos > worldController.level.getLayoutWidth() - (camera.viewportWidth/2)) {
+            xpos = worldController.level.getLayoutWidth() - (camera.viewportWidth/2);
+        }
         camera.position.set(xpos, Constants.VIEWPORT_HEIGHT/2, 0);
         camera.update();
 
@@ -51,9 +54,12 @@ public class WorldRenderer implements Disposable{
     public void resize(int width, int height) {
         camera.viewportWidth = (Constants.VIEWPORT_HEIGHT / height) * width;
         System.out.println("W: "+ width +" H: "+ height);
-        float xpos = worldController.level.getPlayerSprite().getX();
+        float xpos = worldController.player.getX();
         if(xpos < camera.viewportWidth/2) {
             xpos = camera.viewportWidth/2;
+        }
+        if(xpos > worldController.level.getLayoutWidth() - (camera.viewportWidth/2)) {
+            xpos = worldController.level.getLayoutWidth() - (camera.viewportWidth/2);
         }
         camera.position.set(xpos, Constants.VIEWPORT_HEIGHT/2, 0);
         camera.update();

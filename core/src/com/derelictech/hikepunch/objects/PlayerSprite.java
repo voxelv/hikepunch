@@ -60,4 +60,9 @@ public class PlayerSprite extends AbstractGameSprite {
         bob_arm_left.setPosition(shoulderJoint.x, shoulderJoint.y);
         bob_arm_right.setPosition(shoulderJoint.x, shoulderJoint.y);
     }
+
+    @Override
+    public float getWidth() {
+        return (super.getWidth() * scaleFactor);
+    }
 }
