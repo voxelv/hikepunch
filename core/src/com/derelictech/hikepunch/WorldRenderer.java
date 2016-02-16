@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
+import com.derelictech.hikepunch.objects.PlayerSprite;
 
 /**
  * Created by Tim on 2/14/2016.
@@ -18,7 +19,6 @@ public class WorldRenderer implements Disposable{
 
     public WorldRenderer(WorldController worldController) {
         camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
-        camera.position.set(0, 0, 0);
         camera.update();
 
         this.worldController = worldController;
@@ -32,6 +32,15 @@ public class WorldRenderer implements Disposable{
     public void render() {
         Gdx.gl.glClearColor(0, 0.8f, 0.8f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
+        float xpos = worldController.level.getPlayerSprite().getX();
+        if(xpos < camera.viewportWidth/2) {
+            xpos = camera.viewportWidth/2;
+        }
+        camera.position.set(xpos, Constants.VIEWPORT_HEIGHT/2, 0);
+        camera.update();
+
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         worldController.level.renderGameObjects(batch);
@@ -41,7 +50,11 @@ public class WorldRenderer implements Disposable{
     public void resize(int width, int height) {
         camera.viewportWidth = (Constants.VIEWPORT_HEIGHT / height) * width;
         System.out.println("W: "+ width +" H: "+ height);
-        camera.position.set(4, 2, 0);
+        float xpos = worldController.level.getPlayerSprite().getX();
+        if(xpos < camera.viewportWidth/2) {
+            xpos = camera.viewportWidth/2;
+        }
+        camera.position.set(xpos, Constants.VIEWPORT_HEIGHT/2, 0);
         camera.update();
     }
 

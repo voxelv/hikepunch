@@ -89,18 +89,14 @@ public class Level {
                 }
             } // End Double For Loop
         } // End Double For Loop
+        if(playerSprite == null) {
+            throw new NullPointerException("No Player Spawn in Level: " + filename);
+        }
     }
 
     public void renderGameObjects(SpriteBatch batch) {
         for(AbstractGameSprite s : gameObjects) {
             s.draw(batch);
-        }
-    }
-
-    public void rescale(float newScale) {
-        this.scale = newScale;
-        for(AbstractGameSprite s : gameObjects) {
-            s.setScale(newScale, newScale);
         }
     }
 
