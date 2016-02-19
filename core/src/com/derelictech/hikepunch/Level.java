@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.derelictech.hikepunch.objects.*;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 /**
  * Created by Tim on 2/14/2016.
@@ -22,15 +23,15 @@ public class Level {
     private Array<AbstractGameSprite> gameObjects;
 
     // Color Constants---------------------------Red-----------------Green---------------Blue----------------Alpha
-    public static final int startColor =  ((     255     <<24)|(     0       <<16)|(     0       <<8)|(      255     ));
-    public static final int grassColor =  ((     0       <<24)|(     255     <<16)|(     0       <<8)|(      255     ));
-    public static final int rockColor =   ((     128     <<24)|(     128     <<16)|(     128     <<8)|(      255     ));
-    public static final int waterColor =  ((     0       <<24)|(     0       <<16)|(     255     <<8)|(      255     ));
-    public static final int treeColor =   ((     128     <<24)|(     64      <<16)|(     0       <<8)|(      255     ));
-    public static final int diamondColor =((     0       <<24)|(     255     <<16)|(     255     <<8)|(      255     ));
+    private static final int startColor =  ((     255     <<24)|(     0       <<16)|(     0       <<8)|(      255     ));
+    private static final int grassColor =  ((     0       <<24)|(     255     <<16)|(     0       <<8)|(      255     ));
+    private static final int rockColor =   ((     128     <<24)|(     128     <<16)|(     128     <<8)|(      255     ));
+    private static final int waterColor =  ((     0       <<24)|(     0       <<16)|(     255     <<8)|(      255     ));
+    private static final int treeColor =   ((     128     <<24)|(     64      <<16)|(     0       <<8)|(      255     ));
+    private static final int diamondColor =((     0       <<24)|(     255     <<16)|(     255     <<8)|(      255     ));
 
     public Level(String filename) {
-        this(filename, 1);
+        this(filename, 1.0f/ Constants.TILE_PIXEL_WIDTH);
     }
 
     public Level(String filename, float inScale) {
