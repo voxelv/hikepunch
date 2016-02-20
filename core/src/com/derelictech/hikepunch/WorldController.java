@@ -2,6 +2,7 @@ package com.derelictech.hikepunch;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.physics.box2d.World;
 import com.derelictech.hikepunch.objects.PlayerSprite;
 
 /**
@@ -9,9 +10,9 @@ import com.derelictech.hikepunch.objects.PlayerSprite;
  */
 public class WorldController extends InputAdapter{
 
+    private PlayerSprite player;
     public Level level;
-    public PlayerSprite player;
-    public String levelname = "level1.png";
+    private String levelname = "level1.png";
 
     public WorldController() {
         level = new Level(levelname, (1.0f/(Constants.TILE_PIXEL_WIDTH)));
@@ -24,9 +25,10 @@ public class WorldController extends InputAdapter{
     }
 
     public void update(float deltaTime) {
-        player.setPosition(player.getX() + (deltaTime * player.maxSpeed), player.getY());
-        if(player.getX() > level.getLayoutWidth() - player.getWidth()) {
-            player.setX(level.getLayoutWidth() - player.getWidth());
-        }
+        level.update(deltaTime);
+    }
+
+    public Level getLevel() {
+        return this.level;
     }
 }

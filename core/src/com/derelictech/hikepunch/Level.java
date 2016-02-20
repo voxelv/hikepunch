@@ -1,12 +1,10 @@
 package com.derelictech.hikepunch;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.derelictech.hikepunch.objects.*;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 /**
  * Created by Tim on 2/14/2016.
@@ -16,7 +14,7 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 public class Level {
 
     private float scale;
-    private PlayerSprite playerSprite;
+    private PlayerSprite player;
     private int layoutWidth;
     private int layoutHeight;
 
@@ -61,31 +59,27 @@ public class Level {
 
                 switch(currentPixel) {
                     case startColor:
-                        System.out.println("start");
-                        if (playerSprite == null) {
-                            playerSprite = new PlayerSprite(x, y, scale);
+                        if (player == null) {
+                            player = new PlayerSprite(x, y, scale);
                         }
                         break;
                     case grassColor:
-                        System.out.println("grass");
                         s = new GrassSprite(x, y, scale);
                         gameObjects.add(s);
                         break;
                     case rockColor:
-                        System.out.println("rock");
                         s = new RockSprite(x, y, scale);
                         gameObjects.add(s);
                         break;
                     case waterColor:
-                        System.out.println("water");
                         s = new WaterSprite(x, y, scale);
                         gameObjects.add(s);
                         break;
                     case treeColor:
-                        System.out.println("tree");
                         break;
                     case diamondColor:
-                        System.out.println("diamond");
+                        break;
+                    case 0x00FF: // Black, with alpha = 255
                         break;
                     default:
                         System.out.println("OTHER: " + currentPixel);
@@ -93,7 +87,7 @@ public class Level {
                 }
             } // End Double For Loop
         } // End Double For Loop
-        if(playerSprite == null) {
+        if(player == null) {
             throw new NullPointerException("No Player Spawn in Level: " + filename);
         }
     }
@@ -106,6 +100,15 @@ public class Level {
         return layoutHeight;
     }
 
+    public void render(SpriteBatch batch) {
+        renderGameObjects(batch);
+        player.draw(batch);
+    }
+
+    public void update(float deltaTime) {
+        player.update(deltaTime);
+    }
+
     public void renderGameObjects(SpriteBatch batch) {
         for(AbstractGameSprite s : gameObjects) {
             s.draw(batch);
@@ -113,7 +116,7 @@ public class Level {
     }
 
     public PlayerSprite getPlayerSprite() {
-        return playerSprite;
+        return player;
     }
 
 }

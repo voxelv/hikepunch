@@ -15,6 +15,8 @@ public class WorldRenderer implements Disposable{
     OrthographicCamera camera;
 
     WorldController worldController;
+    Level level;
+    
     SpriteBatch batch;
 
     public WorldRenderer(WorldController worldController) {
@@ -22,6 +24,7 @@ public class WorldRenderer implements Disposable{
         camera.update();
 
         this.worldController = worldController;
+        level = worldController.getLevel();
         batch = new SpriteBatch();
     }
 
@@ -34,32 +37,31 @@ public class WorldRenderer implements Disposable{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-        float xpos = worldController.level.getPlayerSprite().getX();
+        float xpos = level.getPlayerSprite().getX();
         if(xpos < camera.viewportWidth/2) {
             xpos = camera.viewportWidth/2;
         }
-        if(xpos > worldController.level.getLayoutWidth() - (camera.viewportWidth/2)) {
-            xpos = worldController.level.getLayoutWidth() - (camera.viewportWidth/2);
+        if(xpos > level.getLayoutWidth() - (camera.viewportWidth/2)) {
+            xpos = level.getLayoutWidth() - (camera.viewportWidth/2);
         }
         camera.position.set(xpos, Constants.VIEWPORT_HEIGHT/2, 0);
         camera.update();
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        worldController.level.renderGameObjects(batch);
-        worldController.player.draw(batch);
+        level.render(batch);
         batch.end();
     }
 
     public void resize(int width, int height) {
         camera.viewportWidth = (Constants.VIEWPORT_HEIGHT / height) * width;
-        System.out.println("W: "+ width +" H: "+ height);
-        float xpos = worldController.player.getX();
+
+        float xpos = level.getPlayerSprite().getX();
         if(xpos < camera.viewportWidth/2) {
             xpos = camera.viewportWidth/2;
         }
-        if(xpos > worldController.level.getLayoutWidth() - (camera.viewportWidth/2)) {
-            xpos = worldController.level.getLayoutWidth() - (camera.viewportWidth/2);
+        if(xpos > level.getLayoutWidth() - (camera.viewportWidth/2)) {
+            xpos = level.getLayoutWidth() - (camera.viewportWidth/2);
         }
         camera.position.set(xpos, Constants.VIEWPORT_HEIGHT/2, 0);
         camera.update();

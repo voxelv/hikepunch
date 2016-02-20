@@ -52,6 +52,10 @@ public class PlayerSprite extends AbstractGameSprite {
         super.draw(batch);
         bob_arm_right.draw(batch);
     }
+    
+    public void update(float deltaTime) {
+        setPosition(getX() + (deltaTime * maxSpeed), getY());
+    }
 
     @Override
     public void setPosition(float x, float y) {
