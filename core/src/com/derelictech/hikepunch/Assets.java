@@ -14,6 +14,7 @@ public class Assets implements Disposable {
     TextureAtlas atlas;
     public TextureRegion bob;
     public TextureRegion bob_arm;
+    public TextureRegion bob_leg;
     public TextureRegion diamond;
     public TextureRegion grass_tile;
     public TextureRegion mountains;
@@ -30,6 +31,7 @@ public class Assets implements Disposable {
 
         bob = atlas.findRegion("bob");
         bob_arm = atlas.findRegion("bob_arm");
+        bob_leg = atlas.findRegion("bob_leg");
         diamond = atlas.findRegion("diamond");
         grass_tile = atlas.findRegion("grass_tile");
         mountains = atlas.findRegion("mountains");

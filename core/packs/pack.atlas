@@ -18,6 +18,13 @@ bob_arm
   orig: 4, 12
   offset: 0, 0
   index: -1
+bob_leg
+  rotate: false
+  xy: 1014, 323
+  size: 4, 12
+  orig: 4, 12
+  offset: 0, 0
+  index: -1
 diamond
   rotate: false
   xy: 2, 20

@@ -1,8 +1,8 @@
 package com.derelictech.hikepunch;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.physics.box2d.World;
 import com.derelictech.hikepunch.objects.PlayerSprite;
 
 /**
@@ -11,13 +11,42 @@ import com.derelictech.hikepunch.objects.PlayerSprite;
 public class WorldController extends InputAdapter{
 
     private PlayerSprite player;
-    public Level level;
-    private String levelname = "level1.png";
+    private Level level;
 
     public WorldController() {
-        level = new Level(levelname, (1.0f/(Constants.TILE_PIXEL_WIDTH)));
+        level = new Level(Constants.LEVEL1, (1.0f/(Constants.TILE_PIXEL_WIDTH)));
         player = level.getPlayerSprite();
         init();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        switch(keycode) {
+            case Input.Keys.A:
+                player.left(true);
+                break;
+            case Input.Keys.D:
+                player.right(true);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        switch(keycode) {
+            case Input.Keys.A:
+                player.left(false);
+                break;
+            case Input.Keys.D:
+                player.right(false);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     private void init() {

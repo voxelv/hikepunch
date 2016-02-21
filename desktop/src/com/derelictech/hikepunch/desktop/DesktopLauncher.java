@@ -7,7 +7,7 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 
 public class DesktopLauncher {
 
-    private static boolean repackTextures = false;
+    private static boolean repackTextures = true;
 
 	public static void main (String[] arg) {
 

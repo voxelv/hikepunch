@@ -18,7 +18,10 @@ public class Level {
     private int layoutWidth;
     private int layoutHeight;
 
-    private Array<AbstractGameSprite> gameObjects;
+    private Array<AbstractGameSprite> terrain;
+    private Array<AbstractGameSprite> water;
+    private Array<AbstractGameSprite> trees;
+    private Array<AbstractGameSprite> diamonds;
 
     // Color Constants---------------------------Red-----------------Green---------------Blue----------------Alpha
     private static final int startColor =  ((     255     <<24)|(     0       <<16)|(     0       <<8)|(      255     ));
@@ -35,9 +38,12 @@ public class Level {
     public Level(String filename, float inScale) {
         this.scale = inScale;
 
-        gameObjects = new Array<AbstractGameSprite>();
+        terrain = new Array<AbstractGameSprite>();
+        water = new Array<AbstractGameSprite>();
+        trees = new Array<AbstractGameSprite>();
+        diamonds = new Array<AbstractGameSprite>();
 
-        gameObjects.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scale, scale));
+        terrain.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scale, scale));
 
         Pixmap levelLayout = new Pixmap(Gdx.files.internal("../level/" + filename));
         layoutWidth = levelLayout.getWidth();
@@ -65,15 +71,15 @@ public class Level {
                         break;
                     case grassColor:
                         s = new GrassSprite(x, y, scale);
-                        gameObjects.add(s);
+                        terrain.add(s);
                         break;
                     case rockColor:
                         s = new RockSprite(x, y, scale);
-                        gameObjects.add(s);
+                        terrain.add(s);
                         break;
                     case waterColor:
                         s = new WaterSprite(x, y, scale);
-                        gameObjects.add(s);
+                        water.add(s);
                         break;
                     case treeColor:
                         break;
@@ -101,7 +107,19 @@ public class Level {
     }
 
     public void render(SpriteBatch batch) {
-        renderGameObjects(batch);
+        for(AbstractGameSprite s : terrain) {
+            s.draw(batch);
+        }
+        for(AbstractGameSprite s : water) {
+            s.draw(batch);
+        }
+        for(AbstractGameSprite s : trees) {
+            s.draw(batch);
+        }
+        for(AbstractGameSprite s : diamonds) {
+            s.draw(batch);
+        }
+
         player.draw(batch);
     }
 
@@ -110,9 +128,6 @@ public class Level {
     }
 
     public void renderGameObjects(SpriteBatch batch) {
-        for(AbstractGameSprite s : gameObjects) {
-            s.draw(batch);
-        }
     }
 
     public PlayerSprite getPlayerSprite() {
