@@ -3,8 +3,15 @@ package com.derelictech.hikepunch;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.derelictech.hikepunch.objects.*;
+import com.derelictech.hikepunch.utils.Box2DFactory;
 
 /**
  * Created by Tim on 2/14/2016.
@@ -13,7 +20,8 @@ import com.derelictech.hikepunch.objects.*;
 @SuppressWarnings("PointlessBitwiseExpression")
 public class Level {
 
-    private float scale;
+    private float scaleFactor;
+    private World world;
     private PlayerSprite player;
     private int layoutWidth;
     private int layoutHeight;
@@ -31,19 +39,16 @@ public class Level {
     private static final int treeColor =   ((     128     <<24)|(     64      <<16)|(     0       <<8)|(      255     ));
     private static final int diamondColor =((     0       <<24)|(     255     <<16)|(     255     <<8)|(      255     ));
 
-    public Level(String filename) {
-        this(filename, 1.0f/ Constants.TILE_PIXEL_WIDTH);
-    }
-
-    public Level(String filename, float inScale) {
-        this.scale = inScale;
+    public Level(String filename, float scale, World w) {
+        this.scaleFactor = scale;
+        this.world = w;
 
         terrain = new Array<AbstractGameSprite>();
         water = new Array<AbstractGameSprite>();
         trees = new Array<AbstractGameSprite>();
         diamonds = new Array<AbstractGameSprite>();
 
-        terrain.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scale, scale));
+        terrain.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scaleFactor, scaleFactor));
 
         Pixmap levelLayout = new Pixmap(Gdx.files.internal("../level/" + filename));
         layoutWidth = levelLayout.getWidth();
@@ -53,32 +58,77 @@ public class Level {
             for(int layoutY = 0; layoutY < layoutHeight; layoutY++) {
 
                 currentPixel = levelLayout.getPixel(layoutX, layoutY);
-                float x = (layoutX * (Constants.TILE_PIXEL_WIDTH * scale));
-                float y = Gdx.graphics.getHeight() - ((layoutY + 1) * (Constants.TILE_PIXEL_WIDTH * scale));
+                float x = (layoutX * (Constants.TILE_PIXEL_WIDTH * scaleFactor));
+                float y = Gdx.graphics.getHeight() - ((layoutY + 1) * (Constants.TILE_PIXEL_WIDTH * scaleFactor));
 
-                if((layoutHeight * Constants.TILE_PIXEL_WIDTH * scale) > Gdx.graphics.getHeight()) {
-                    y += (layoutHeight * Constants.TILE_PIXEL_WIDTH * scale) - Gdx.graphics.getHeight();
+                if((layoutHeight * Constants.TILE_PIXEL_WIDTH * scaleFactor) > Gdx.graphics.getHeight()) {
+                    y += (layoutHeight * Constants.TILE_PIXEL_WIDTH * scaleFactor) - Gdx.graphics.getHeight();
                 }
-                else y -= Gdx.graphics.getHeight() - (layoutHeight * Constants.TILE_PIXEL_WIDTH * scale);
+                else y -= Gdx.graphics.getHeight() - (layoutHeight * Constants.TILE_PIXEL_WIDTH * scaleFactor);
 
                 AbstractGameSprite s;
+                Shape shape;
+                FixtureDef fd;
+                Fixture f;
 
                 switch(currentPixel) {
                     case startColor:
                         if (player == null) {
-                            player = new PlayerSprite(x, y, scale);
+                            player = new PlayerSprite(x, y, scaleFactor);
+                            shape = Box2DFactory.createBoxShape(
+                                    scaleFactor*player.getWidth()/2,
+                                    scaleFactor*player.getHeight()/2,
+                                    new Vector2(scaleFactor*player.getWidth()/2,scaleFactor*player.getHeight()/2),
+                                    0 // Rotation
+                            );
+                            fd = Box2DFactory.createFixture(shape, 0.5f, 0.7f, 0f, false);
+                            player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(x, y + 1));
+                            player.body.setFixedRotation(true);
+                            shape = Box2DFactory.createBoxShape(
+                                    scaleFactor*player.getWidth()/3,
+                                    scaleFactor*player.getHeight()/30,
+                                    new Vector2(scaleFactor*player.getWidth()/2, -1*scaleFactor),
+                                    0 // Rotation
+                            );
+                            fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
+                            f = player.body.createFixture(fd);
+                            f.setUserData(Constants.USERDATA.PLAYER_FOOT_SENSOR);
                         }
                         break;
                     case grassColor:
-                        s = new GrassSprite(x, y, scale);
+                        s = new GrassSprite(x, y, scaleFactor);
+                        shape = Box2DFactory.createBoxShape(
+                                scaleFactor*s.getWidth()/2,
+                                scaleFactor*s.getHeight()/2,
+                                new Vector2(scaleFactor*s.getWidth()/2,scaleFactor*s.getHeight()/2),
+                                0 // Rotation
+                        );
+                        fd = Box2DFactory.createFixture(shape, 0.5f, 0.4f, 0f, false);
+                        s.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.GRASS);
                         terrain.add(s);
                         break;
                     case rockColor:
-                        s = new RockSprite(x, y, scale);
+                        s = new RockSprite(x, y, scaleFactor);
+                        shape = Box2DFactory.createBoxShape(
+                                scaleFactor*s.getWidth()/2,
+                                scaleFactor*s.getHeight()/2,
+                                new Vector2(scaleFactor*s.getWidth()/2,scaleFactor*s.getHeight()/2),
+                                0 // Rotation
+                        );
+                        fd = Box2DFactory.createFixture(shape, 0.5f, 0.4f, 0f, false);
+                        s.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y));
                         terrain.add(s);
                         break;
                     case waterColor:
-                        s = new WaterSprite(x, y, scale);
+                        s = new WaterSprite(x, y, scaleFactor);
+                        shape = Box2DFactory.createBoxShape(
+                                scaleFactor*s.getWidth()/2,
+                                scaleFactor*s.getHeight()/2,
+                                new Vector2(scaleFactor*s.getWidth()/2,scaleFactor*s.getHeight()/2),
+                                0 // Rotation
+                        );
+                        fd = Box2DFactory.createFixture(shape, 0.5f, 0.4f, 0f, true);
+                        s.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y));
                         water.add(s);
                         break;
                     case treeColor:
@@ -123,15 +173,7 @@ public class Level {
         player.draw(batch);
     }
 
-    public void update(float deltaTime) {
-        player.update(deltaTime);
-    }
-
-    public void renderGameObjects(SpriteBatch batch) {
-    }
-
     public PlayerSprite getPlayerSprite() {
         return player;
     }
-
 }

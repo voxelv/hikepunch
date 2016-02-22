@@ -3,19 +3,30 @@ package com.derelictech.hikepunch;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.ContactFilter;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.World;
 import com.derelictech.hikepunch.objects.PlayerSprite;
+import com.derelictech.hikepunch.utils.HPContactListener;
 
 /**
  * Created by Tim on 2/14/2016.
  */
 public class WorldController extends InputAdapter{
 
-    private PlayerSprite player;
     private Level level;
+    private PlayerSprite player;
+    private HPContactListener contactListener;
+
+    public World world;
 
     public WorldController() {
-        level = new Level(Constants.LEVEL1, (1.0f/(Constants.TILE_PIXEL_WIDTH)));
+        world = new World(new Vector2(0, -9.8f), true);
+        level = new Level(Constants.LEVEL1, (1.0f/(Constants.TILE_PIXEL_WIDTH)), world);
         player = level.getPlayerSprite();
+        contactListener = new HPContactListener(player);
+        world.setContactListener(contactListener);
         init();
     }
 
@@ -23,10 +34,15 @@ public class WorldController extends InputAdapter{
     public boolean keyDown(int keycode) {
         switch(keycode) {
             case Input.Keys.A:
-                player.left(true);
+                player.body.applyForceToCenter(-100.0f, 0, true);
                 break;
             case Input.Keys.D:
-                player.right(true);
+                player.body.applyForceToCenter(100.0f, 0, true);
+                break;
+            case Input.Keys.W:
+                if(player.canJump()) {
+                    player.jump();
+                }
                 break;
             default:
                 break;
@@ -38,10 +54,8 @@ public class WorldController extends InputAdapter{
     public boolean keyUp(int keycode) {
         switch(keycode) {
             case Input.Keys.A:
-                player.left(false);
                 break;
             case Input.Keys.D:
-                player.right(false);
                 break;
             default:
                 break;
@@ -51,10 +65,12 @@ public class WorldController extends InputAdapter{
 
     private void init() {
         Gdx.input.setInputProcessor(this);
+
     }
 
     public void update(float deltaTime) {
-        level.update(deltaTime);
+        world.step(deltaTime, 6, 2);
+        player.setPosition(player.body.getPosition().x, player.body.getPosition().y);
     }
 
     public Level getLevel() {

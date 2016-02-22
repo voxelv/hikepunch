@@ -9,4 +9,12 @@ public class Constants {
     public static final float VIEWPORT_HEIGHT = 16f;
 
     public static final String LEVEL1 = "level1.png";
+
+    public static final class USERDATA {
+        public static final String PLAYER_FOOT_SENSOR = "pfs";
+        public static final String GRASS = "g";
+        public static final String WATER = "w";
+        public static final String DIAMOND = "d";
+        public static final String ROCK = "r";
+    }
 }

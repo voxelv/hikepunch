@@ -30,10 +30,11 @@ public class GameScreen extends AbstractGameScreen {
 
     @Override
     public void render(float delta) {
+        worldRenderer.render();
+
         if(!paused) {
             worldController.update(delta);
         }
-        worldRenderer.render();
     }
 
     @Override

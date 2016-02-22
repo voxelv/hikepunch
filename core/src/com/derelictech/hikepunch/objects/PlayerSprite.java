@@ -3,8 +3,11 @@ package com.derelictech.hikepunch.objects;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.derelictech.hikepunch.Assets;
 
 /**
@@ -15,12 +18,10 @@ public class PlayerSprite extends AbstractGameSprite {
     private class BobLimb extends Sprite {
         public BobLimb(TextureRegion region, float x, float y, float scale) {
             super(region);
-            setPosition(x, y);
             setOrigin(2.5f, 9.5f);
             setScale(scale);
+            setPosition(x, y);
         }
-
-        public float time = 0;
 
         @Override
         public void setPosition(float x, float y) {
@@ -28,25 +29,16 @@ public class PlayerSprite extends AbstractGameSprite {
         }
     }
 
-    private static class DIR {
-        public static int RIGHT = 1;
-        public static int LEFT = -1;
-    }
-
-    private boolean movingLeft = false;
-    private boolean movingRight = false;
+    private enum State {GROUNDED, AIRBORNE}
+    private State jumpState;
 
     private float scaleFactor;
 
     private Vector2 shoulderJoint;
     private Vector2 hipJoint;
 
-    private float maxAccelHorz = 12;
-    private float velocity = 0;
-    private float horzAcceleration = 0;
-    private int dir = DIR.RIGHT;
-
     private float swingAngle = 0;
+    private Vector2 jumpVector = new Vector2(0, 3.0f);
 
     private BobLimb bob_arm_right;
     private BobLimb bob_arm_left;
@@ -75,28 +67,9 @@ public class PlayerSprite extends AbstractGameSprite {
         bob_leg_right.draw(batch);
         bob_arm_right.draw(batch);
     }
-    
+
     public void update(float deltaTime) {
 
-        // Horizontal Movement
-        if(movingRight ^ movingLeft) {
-            if(movingRight) {
-                dir = DIR.RIGHT;
-                flipX(false);
-            }
-            else {
-                dir = DIR.LEFT;
-                flipX(true);
-            }
-            swingAngle = MathUtils.cos(bob_arm_left.time += deltaTime * 9) * 55;
-            setSwing(swingAngle);
-        }
-        else {
-            swingAngle = 0;
-            setSwing(swingAngle);
-        }
-        velocity = horzAcceleration * deltaTime;
-        setPosition(getX() + dir * (0.5f * horzAcceleration * deltaTime + velocity * deltaTime), getY());
     }
 
     @Override
@@ -109,6 +82,7 @@ public class PlayerSprite extends AbstractGameSprite {
     }
 
     private void setSwing(float angle) {
+        //swingAngle = MathUtils.cos(bob_arm_left.time += deltaTime * 9) * 55;
         bob_arm_left.setRotation(angle);
         bob_arm_right.setRotation(-angle);
         bob_leg_left.setRotation(-angle);
@@ -123,13 +97,16 @@ public class PlayerSprite extends AbstractGameSprite {
             bob_leg_right.setFlip(b, false);
     }
 
-    public void left(boolean b) {
-        movingLeft = b;
-        horzAcceleration =  b ? maxAccelHorz : 0;
+    public boolean canJump() {
+        return jumpState == State.GROUNDED;
     }
 
-    public void right(boolean b) {
-        movingRight = b;
-        horzAcceleration = b ? maxAccelHorz : 0;
+    public void jump() {
+        body.applyLinearImpulse(jumpVector, body.getLocalCenter(), true);
+    }
+
+    public void enableJump(boolean b) {
+        jumpState = b ? State.GROUNDED : State.AIRBORNE;
+        System.out.println("Canjump: " + canJump());
     }
 }
