@@ -76,18 +76,18 @@ public class Level {
                         if (player == null) {
                             player = new PlayerSprite(x, y, scaleFactor);
                             shape = Box2DFactory.createBoxShape(
-                                    scaleFactor*player.getWidth()/2,
-                                    scaleFactor*player.getHeight()/2,
+                                    scaleFactor*player.getWidth()/2.0f,
+                                    scaleFactor*player.getHeight()/2.0f,
                                     new Vector2(scaleFactor*player.getWidth()/2,scaleFactor*player.getHeight()/2),
                                     0 // Rotation
                             );
-                            fd = Box2DFactory.createFixture(shape, 0.5f, 0.7f, 0f, false);
+                            fd = Box2DFactory.createFixture(shape, 0.5f, 0.6f, 0f, false);
                             player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(x, y + 1));
                             player.body.setFixedRotation(true);
                             shape = Box2DFactory.createBoxShape(
-                                    scaleFactor*player.getWidth()/3,
-                                    scaleFactor*player.getHeight()/30,
-                                    new Vector2(scaleFactor*player.getWidth()/2, -1*scaleFactor),
+                                    scaleFactor*player.getWidth()/2.5f,
+                                    scaleFactor*player.getHeight()/50,
+                                    new Vector2(scaleFactor*player.getWidth()/2, 0),
                                     0 // Rotation
                             );
                             fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);

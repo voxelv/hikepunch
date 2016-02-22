@@ -3,11 +3,8 @@ package com.derelictech.hikepunch.objects;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
 import com.derelictech.hikepunch.Assets;
 
 /**
@@ -38,7 +35,11 @@ public class PlayerSprite extends AbstractGameSprite {
     private Vector2 hipJoint;
 
     private float swingAngle = 0;
-    private Vector2 jumpVector = new Vector2(0, 3.0f);
+    private Vector2 jumpVector = new Vector2(0, 2.4f);
+    private boolean movingLeft = false;
+    private boolean movingRight = false;
+    private float maxXVelocity = 5.0f;
+    private float xMoveForce = 10.0f;
 
     private BobLimb bob_arm_right;
     private BobLimb bob_arm_left;
@@ -69,7 +70,18 @@ public class PlayerSprite extends AbstractGameSprite {
     }
 
     public void update(float deltaTime) {
+        setPosition(body.getPosition().x, body.getPosition().y);
 
+        if(movingLeft ^ movingRight) {
+            moveX();
+        }
+    }
+
+    public void moveX() {
+        if (movingRight && body.getLinearVelocity().x < maxXVelocity)
+            body.applyForceToCenter(xMoveForce, 0, true);
+        if(movingLeft && body.getLinearVelocity().x > -maxXVelocity)
+            body.applyForceToCenter(-xMoveForce, 0, true);
     }
 
     @Override
@@ -107,6 +119,13 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void enableJump(boolean b) {
         jumpState = b ? State.GROUNDED : State.AIRBORNE;
-        System.out.println("Canjump: " + canJump());
+    }
+
+    public void moveLeft(boolean b) {
+        movingLeft = b;
+    }
+
+    public void moveRight(boolean b) {
+        movingRight = b;
     }
 }

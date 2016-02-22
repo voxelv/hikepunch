@@ -34,10 +34,10 @@ public class WorldController extends InputAdapter{
     public boolean keyDown(int keycode) {
         switch(keycode) {
             case Input.Keys.A:
-                player.body.applyForceToCenter(-100.0f, 0, true);
+                player.moveLeft(true);
                 break;
             case Input.Keys.D:
-                player.body.applyForceToCenter(100.0f, 0, true);
+                player.moveRight(true);
                 break;
             case Input.Keys.W:
                 if(player.canJump()) {
@@ -54,8 +54,10 @@ public class WorldController extends InputAdapter{
     public boolean keyUp(int keycode) {
         switch(keycode) {
             case Input.Keys.A:
+                player.moveLeft(false);
                 break;
             case Input.Keys.D:
+                player.moveRight(false);
                 break;
             default:
                 break;
@@ -65,12 +67,11 @@ public class WorldController extends InputAdapter{
 
     private void init() {
         Gdx.input.setInputProcessor(this);
-
     }
 
     public void update(float deltaTime) {
         world.step(deltaTime, 6, 2);
-        player.setPosition(player.body.getPosition().x, player.body.getPosition().y);
+        player.update(deltaTime);
     }
 
     public Level getLevel() {
