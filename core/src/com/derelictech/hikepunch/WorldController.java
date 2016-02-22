@@ -26,7 +26,7 @@ public class WorldController extends InputAdapter{
         world = new World(new Vector2(0, -20.0f), true);
         level = new Level(Constants.LEVEL1, (1.0f/(Constants.TILE_PIXEL_WIDTH)), world);
         player = level.getPlayerSprite();
-        contactListener = new HPContactListener(player);
+        contactListener = new HPContactListener(player, level);
         world.setContactListener(contactListener);
 
         init();

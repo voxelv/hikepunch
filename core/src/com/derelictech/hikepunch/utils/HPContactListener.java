@@ -2,6 +2,7 @@ package com.derelictech.hikepunch.utils;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.derelictech.hikepunch.Constants;
+import com.derelictech.hikepunch.Level;
 import com.derelictech.hikepunch.objects.PlayerSprite;
 
 /**
@@ -10,9 +11,11 @@ import com.derelictech.hikepunch.objects.PlayerSprite;
 public class HPContactListener implements ContactListener {
 
     private PlayerSprite player;
+    private Level level;
 
-    public HPContactListener(PlayerSprite player) {
+    public HPContactListener(PlayerSprite player, Level level) {
         this.player = player;
+        this.level = level;
     }
 
     private int footTouchCount = 0;
@@ -32,7 +35,6 @@ public class HPContactListener implements ContactListener {
             footTouchCount++;
             if(footTouchCount > 0) player.enableJump(true);
             player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
-            System.out.println("Foot CONTACT: " + footTouchCount);
         }
     }
 
@@ -44,14 +46,24 @@ public class HPContactListener implements ContactListener {
         else userDataA = "";
         if(contact.getFixtureB().getUserData() instanceof String) userDataB = (String) contact.getFixtureB().getUserData();
         else userDataB = "";
+        System.out.println("CONTACT: " + userDataA + " " + userDataB);
 
         // Collision between Player Foot and Grass
         if((userDataA.equals(Constants.USERDATA.PLAYER_FOOT_SENSOR) && userDataB.equals(Constants.USERDATA.GRASS)) ||
-           (userDataB.equals(Constants.USERDATA.GRASS) && userDataA.equals(Constants.USERDATA.PLAYER_FOOT_SENSOR))) {
+                (userDataB.equals(Constants.USERDATA.GRASS) && userDataA.equals(Constants.USERDATA.PLAYER_FOOT_SENSOR))) {
             footTouchCount--;
             if(footTouchCount > 0) player.enableJump(true);
             else player.enableJump(false);
-            System.out.println("Foot UNCONTACT: " + footTouchCount);
+        }
+
+        // Collision between Player Arm and TreeID
+        if(userDataA.equals(Constants.USERDATA.PLAYER_ARM_SENSOR) && userDataB.substring(0, 0).equals(Constants.USERDATA.TREE.substring(0, 0))) {
+            level.punchTree(Integer.parseInt(userDataB.substring(1)));
+            System.out.println("TREE CONTACT");
+        }
+        if(userDataB.substring(0, 0).equals(Constants.USERDATA.TREE.substring(0, 0)) && userDataA.equals(Constants.USERDATA.PLAYER_ARM_SENSOR)) {
+            level.punchTree(Integer.parseInt(userDataA.substring(1)));
+            System.out.println("TREE CONTACT");
         }
 
     }

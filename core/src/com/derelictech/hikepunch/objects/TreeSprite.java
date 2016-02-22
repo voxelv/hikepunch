@@ -17,13 +17,16 @@ public class TreeSprite extends AbstractGameSprite {
     private Array<AbstractGameSprite> pieces;
     private Array<Body> bodies;
     private float scaleFactor;
+    public int ID;
 
 
-    public TreeSprite(float x, float y, float scale) {
+    public TreeSprite(int ID, float x, float y, float scale) {
         super(Assets.instance.tree_trunk, x, y, scale);
+        this.ID = ID;
         scaleFactor = scale;
         pieces = new Array<AbstractGameSprite>();
         createPieces();
+        System.out.println("Tree Created with ID: " + this.ID);
     }
 
     private class LeavesSprite extends AbstractGameSprite {
@@ -96,7 +99,7 @@ public class TreeSprite extends AbstractGameSprite {
                     0 // Rotation
             );
             fd = Box2DFactory.createFixture(shape, 0.5f, 5.0f, 0.1f, false);
-            s.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(s.getX(), s.getY()), Constants.USERDATA.GRASS);
+            s.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(s.getX(), s.getY()), Constants.USERDATA.TREE+ID);
             shape = Box2DFactory.createTileLeftShape();
             fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
             s.body.createFixture(fd);

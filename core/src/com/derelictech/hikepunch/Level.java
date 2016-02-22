@@ -59,11 +59,12 @@ public class Level {
         Shape shape;
         FixtureDef fd;
         Fixture f;
+        int treeID = 0;
 
         Vector2 playerPosition = null;
 
         // Create Player before all others
-        player = new PlayerSprite(world, -3, -3, scaleFactor);
+        player = new PlayerSprite(world, 5, 5, scaleFactor);
         shape = Box2DFactory.createBoxShape(
                 scaleFactor*player.getWidth()/2.0f,
                 scaleFactor*player.getHeight()/2.0f,
@@ -82,7 +83,6 @@ public class Level {
         fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
         f = player.body.createFixture(fd);
         f.setUserData(Constants.USERDATA.PLAYER_FOOT_SENSOR);
-        player.init();
 
         int currentPixel;
         for(int layoutX = 0; layoutX < layoutWidth;  layoutX++) {
@@ -152,7 +152,7 @@ public class Level {
                     water.add(s);
                     break;
                 case treeColor:
-                    s = new TreeSprite(x, y, scaleFactor);
+                    s = new TreeSprite(treeID, x, y, scaleFactor);
                     TreeSprite ts;
                     ts = (TreeSprite) s;
                     shape = Box2DFactory.createBoxShape(
@@ -162,7 +162,7 @@ public class Level {
                             0 // Rotation
                     );
                     fd = Box2DFactory.createFixture(shape, 10.0f, 5.0f, 0.0f, false);
-                    ts.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.GRASS);
+                    ts.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.TREE+treeID);
                     shape = Box2DFactory.createTileLeftShape();
                     fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
                     ts.body.createFixture(fd);
@@ -171,6 +171,7 @@ public class Level {
                     ts.body.createFixture(fd);
                     ts.setBodies(world);
                     trees.add(ts);
+                    treeID++;
                     break;
                 case diamondColor:
                     break;
@@ -188,6 +189,7 @@ public class Level {
 
         // Set player position after finding where
         player.body.setTransform(playerPosition.x, playerPosition.y, 0);
+        player.init();
     }
 
     public void updateTrees(float deltaTime) {
@@ -223,5 +225,13 @@ public class Level {
 
     public PlayerSprite getPlayerSprite() {
         return player;
+    }
+
+    public void punchTree(int ID) {
+        for(int i = 0; i < trees.size; i++) {
+            if(trees.get(i).ID == ID) {
+                trees.removeIndex(i);
+            }
+        }
     }
 }

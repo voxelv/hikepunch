@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.derelictech.hikepunch.Assets;
+import com.derelictech.hikepunch.Constants;
 import com.derelictech.hikepunch.utils.Box2DFactory;
 
 /**
@@ -16,7 +17,7 @@ import com.derelictech.hikepunch.utils.Box2DFactory;
 public class PlayerSprite extends AbstractGameSprite {
 
     private class BobLimb extends Sprite {
-        public Body body;
+        public Fixture fixture;
 
         public BobLimb(TextureRegion region, float x, float y, float scale) {
             super(region);
@@ -81,26 +82,36 @@ public class PlayerSprite extends AbstractGameSprite {
                 0 // Rotation
         );
         FixtureDef fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
-        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(getX() + shoulderJoint.x , getY() + shoulderJoint.y));
+        bob_arm_left.fixture = body.createFixture(fd);
 
+//        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.DynamicBody, fd, new Vector2(getX() + shoulderJoint.x , getY() + shoulderJoint.y), Constants.USERDATA.PLAYER_ARM_SENSOR);
 
 //        RevoluteJointDef jd = new RevoluteJointDef();
-//        jd.initialize(this.body, bob_arm_left.body, new Vector2(0, 0));
+//        jd.collideConnected = false;
+//        jd.initialize(this.body, bob_arm_left.body, new Vector2(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y));
 //        world.createJoint(jd);
     }
 
     @Override
     public void draw(Batch batch) {
-        bob_arm_left.draw(batch);
-        bob_leg_left.draw(batch);
-        super.draw(batch);
-        bob_leg_right.draw(batch);
-        bob_arm_right.draw(batch);
+        if(flipped) {
+            bob_arm_right.draw(batch);
+            bob_leg_right.draw(batch);
+            super.draw(batch);
+            bob_leg_left.draw(batch);
+            bob_arm_left.draw(batch);
+        }
+        else {
+            bob_arm_left.draw(batch);
+            bob_leg_left.draw(batch);
+            super.draw(batch);
+            bob_leg_right.draw(batch);
+            bob_arm_right.draw(batch);
+        }
     }
 
     public void update(float deltaTime) {
         setPosition(body.getPosition().x, body.getPosition().y);
-        bob_arm_left.setPosition(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y);
 
         if(movingLeft ^ movingRight) {
             moveX();
@@ -123,7 +134,6 @@ public class PlayerSprite extends AbstractGameSprite {
             bob_leg_left.setRotation(20 * neg);
             bob_leg_right.setRotation(-20 * neg);
         }
-
     }
 
     public void moveX() {
@@ -137,7 +147,6 @@ public class PlayerSprite extends AbstractGameSprite {
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        bob_arm_left.body.setTransform(x + shoulderJoint.x - bob_arm_left.getOriginX() * scaleFactor, y + shoulderJoint.y - bob_arm_left.getOriginY() * scaleFactor, bob_arm_left.body.getAngle());
         bob_arm_left.setPosition(x + shoulderJoint.x, y + shoulderJoint.y);
         bob_arm_right.setPosition(x + shoulderJoint.x, y + shoulderJoint.y);
         bob_leg_left.setPosition(x + hipJoint.x, y + hipJoint.y);
@@ -185,11 +194,17 @@ public class PlayerSprite extends AbstractGameSprite {
     }
 
     public void punch(boolean b) {
+//        if(b) {
+//            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, -90*(MathUtils.PI / 180f));
+//        }
+//        else {
+//            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 0);
+//        }
         if(b) {
-            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 90*(MathUtils.PI / 180f));
+            body.destroyFixture(bob_arm_left.fixture);
         }
         else {
-            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 0);
+            //bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 0);
         }
     }
 }
