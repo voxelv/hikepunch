@@ -31,6 +31,7 @@ public class HPContactListener implements ContactListener {
            (userDataB.equals(Constants.USERDATA.GRASS) && userDataA.equals(Constants.USERDATA.PLAYER_FOOT_SENSOR))) {
             footTouchCount++;
             if(footTouchCount > 0) player.enableJump(true);
+            player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
         }
     }
 

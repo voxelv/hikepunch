@@ -4,11 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Shape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
+import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
 import com.badlogic.gdx.utils.Array;
 import com.derelictech.hikepunch.objects.*;
 import com.derelictech.hikepunch.utils.Box2DFactory;
@@ -53,6 +52,7 @@ public class Level {
         Pixmap levelLayout = new Pixmap(Gdx.files.internal("../level/" + filename));
         layoutWidth = levelLayout.getWidth();
         layoutHeight = levelLayout.getHeight();
+
         int currentPixel;
         for(int layoutX = 0; layoutX < layoutWidth;  layoutX++) {
             for(int layoutY = 0; layoutY < layoutHeight; layoutY++) {
@@ -81,12 +81,12 @@ public class Level {
                                     new Vector2(scaleFactor*player.getWidth()/2,scaleFactor*player.getHeight()/2),
                                     0 // Rotation
                             );
-                            fd = Box2DFactory.createFixture(shape, 0.5f, 0.6f, 0f, false);
+                            fd = Box2DFactory.createFixture(shape, 0.7f, 1.0f, 0f, false);
                             player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(x, y + 1));
                             player.body.setFixedRotation(true);
                             shape = Box2DFactory.createBoxShape(
                                     scaleFactor*player.getWidth()/2.5f,
-                                    scaleFactor*player.getHeight()/50,
+                                    scaleFactor*player.getHeight()/20,
                                     new Vector2(scaleFactor*player.getWidth()/2, 0),
                                     0 // Rotation
                             );
@@ -103,7 +103,7 @@ public class Level {
                                 new Vector2(scaleFactor*s.getWidth()/2,scaleFactor*s.getHeight()/2),
                                 0 // Rotation
                         );
-                        fd = Box2DFactory.createFixture(shape, 0.5f, 0.4f, 0f, false);
+                        fd = Box2DFactory.createFixture(shape, 0.5f, 1.0f, 0.0f, false);
                         s.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.GRASS);
                         terrain.add(s);
                         break;

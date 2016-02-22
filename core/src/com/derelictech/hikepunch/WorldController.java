@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.ContactFilter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.derelictech.hikepunch.objects.PlayerSprite;
+import com.derelictech.hikepunch.utils.Box2DFactory;
 import com.derelictech.hikepunch.utils.HPContactListener;
 
 /**
@@ -27,6 +28,7 @@ public class WorldController extends InputAdapter{
         player = level.getPlayerSprite();
         contactListener = new HPContactListener(player);
         world.setContactListener(contactListener);
+
         init();
     }
 

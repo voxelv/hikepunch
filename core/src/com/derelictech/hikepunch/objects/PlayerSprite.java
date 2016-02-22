@@ -35,11 +35,16 @@ public class PlayerSprite extends AbstractGameSprite {
     private Vector2 hipJoint;
 
     private float swingAngle = 0;
-    private Vector2 jumpVector = new Vector2(0, 2.4f);
+    private float timeAccumulator = 0;
+    private boolean flipped = false;
+
+    private Vector2 jumpVector = new Vector2(0, 3.5f);
     private boolean movingLeft = false;
     private boolean movingRight = false;
-    private float maxXVelocity = 5.0f;
-    private float xMoveForce = 10.0f;
+    private float maxXVelocityGround = 7.0f;
+    private float maxXVelocityAir = 3.5f;
+    private float maxXVelocity = maxXVelocityGround;
+    private float xMoveForce = 20.0f;
 
     private BobLimb bob_arm_right;
     private BobLimb bob_arm_left;
@@ -75,6 +80,25 @@ public class PlayerSprite extends AbstractGameSprite {
         if(movingLeft ^ movingRight) {
             moveX();
         }
+        int neg = flipped ? -1 : 1;
+        if(body.getLinearVelocity().x > 0.25f) {
+            flipX(false);
+        }
+        else if(body.getLinearVelocity().x < -0.25f) {
+            flipX(true);
+        }
+
+        if(jumpState == State.GROUNDED) {
+            swingAngle = MathUtils.cos(timeAccumulator += (deltaTime * 7 * (body.getLinearVelocity().x / maxXVelocity))) * 55 * (body.getLinearVelocity().x / maxXVelocity);
+            setSwing(swingAngle);
+        }
+        else {
+            bob_arm_left.setRotation(-20 * neg);
+            bob_arm_right.setRotation(130 * neg);
+            bob_leg_left.setRotation(20 * neg);
+            bob_leg_right.setRotation(-20 * neg);
+        }
+
     }
 
     public void moveX() {
@@ -82,6 +106,7 @@ public class PlayerSprite extends AbstractGameSprite {
             body.applyForceToCenter(xMoveForce, 0, true);
         if(movingLeft && body.getLinearVelocity().x > -maxXVelocity)
             body.applyForceToCenter(-xMoveForce, 0, true);
+        body.setTransform(body.getPosition().x, body.getPosition().y + 0.001f, body.getAngle());
     }
 
     @Override
@@ -94,7 +119,6 @@ public class PlayerSprite extends AbstractGameSprite {
     }
 
     private void setSwing(float angle) {
-        //swingAngle = MathUtils.cos(bob_arm_left.time += deltaTime * 9) * 55;
         bob_arm_left.setRotation(angle);
         bob_arm_right.setRotation(-angle);
         bob_leg_left.setRotation(-angle);
@@ -102,11 +126,12 @@ public class PlayerSprite extends AbstractGameSprite {
     }
 
     public void flipX(boolean b) {
-            this.setFlip(b, false);
-            bob_arm_left.setFlip(b, false);
-            bob_arm_right.setFlip(b, false);
-            bob_leg_left.setFlip(b, false);
-            bob_leg_right.setFlip(b, false);
+        this.setFlip(b, false);
+        bob_arm_left.setFlip(b, false);
+        bob_arm_right.setFlip(b, false);
+        bob_leg_left.setFlip(b, false);
+        bob_leg_right.setFlip(b, false);
+        flipped = b;
     }
 
     public boolean canJump() {
@@ -119,6 +144,10 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void enableJump(boolean b) {
         jumpState = b ? State.GROUNDED : State.AIRBORNE;
+        maxXVelocity = b ? maxXVelocityGround : maxXVelocityAir;
+        if(body.getLinearVelocity().x > maxXVelocity) {
+            body.setLinearVelocity(maxXVelocity, body.getLinearVelocity().y);
+        }
     }
 
     public void moveLeft(boolean b) {
