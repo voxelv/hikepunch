@@ -73,6 +73,7 @@ public class WorldController extends InputAdapter{
 
     public void update(float deltaTime) {
         world.step(deltaTime, 6, 2);
+        level.updateTrees(deltaTime);
         player.update(deltaTime);
     }
 

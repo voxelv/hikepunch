@@ -75,7 +75,7 @@ public class Box2DFactory {
 
     public static Shape createTileRightShape() {
         EdgeShape es = new EdgeShape();
-        es.set(1f, 1f, 0f, 1f);
+        es.set(1f, 0f, 1f, 1f);
         return es;
     }
 

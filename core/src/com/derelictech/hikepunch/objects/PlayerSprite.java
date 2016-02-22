@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import com.derelictech.hikepunch.Assets;
+import com.derelictech.hikepunch.utils.Box2DFactory;
 
 /**
  * Created by Tim on 2/14/2016.
@@ -13,6 +15,8 @@ import com.derelictech.hikepunch.Assets;
 public class PlayerSprite extends AbstractGameSprite {
 
     private class BobLimb extends Sprite {
+        public Body body;
+
         public BobLimb(TextureRegion region, float x, float y, float scale) {
             super(region);
             setOrigin(2.5f, 9.5f);
@@ -38,6 +42,8 @@ public class PlayerSprite extends AbstractGameSprite {
     private float timeAccumulator = 0;
     private boolean flipped = false;
 
+    private World world;
+
     private Vector2 jumpVector = new Vector2(0, 7.0f);
     private boolean movingLeft = false;
     private boolean movingRight = false;
@@ -52,8 +58,9 @@ public class PlayerSprite extends AbstractGameSprite {
     private BobLimb bob_leg_right;
     private BobLimb bob_leg_left;
 
-    public PlayerSprite(float x, float y, float scale) {
+    public PlayerSprite(World world, float x, float y, float scale) {
         super(Assets.instance.bob, x, y, scale);
+        this.world = world;
         this.scaleFactor = scale;
 
         shoulderJoint = new Vector2(4.5f*scale, 19.5f*scale);
@@ -63,6 +70,15 @@ public class PlayerSprite extends AbstractGameSprite {
         bob_arm_left = new BobLimb(Assets.instance.bob_arm, x +  shoulderJoint.x, y + shoulderJoint.y, scale);
         bob_leg_right = new BobLimb(Assets.instance.bob_leg, x + hipJoint.x, y + hipJoint.y, scale);
         bob_leg_left = new BobLimb(Assets.instance.bob_leg, x + hipJoint.x, y + hipJoint.y, scale);
+
+        Shape shape = Box2DFactory.createBoxShape(
+                scaleFactor*bob_arm_left.getWidth()/2,
+                scaleFactor*bob_arm_left.getHeight()/2,
+                new Vector2(scaleFactor*bob_arm_left.getWidth()/2, scaleFactor*bob_arm_left.getHeight()/2),
+                0 // Rotation
+        );
+        FixtureDef fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
+        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(bob_arm_left.getX(), bob_arm_left.getY()));
     }
 
     @Override
@@ -76,6 +92,7 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void update(float deltaTime) {
         setPosition(body.getPosition().x, body.getPosition().y);
+
 
         if(movingLeft ^ movingRight) {
             moveX();

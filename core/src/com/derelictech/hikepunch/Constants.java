@@ -14,6 +14,7 @@ public class Constants {
         public static final String PLAYER = "p";
         public static final String PLAYER_FOOT_SENSOR = "pfs";
         public static final String GRASS = "g";
+        public static final String TREE = "t";
         public static final String WATER = "w";
         public static final String DIAMOND = "d";
         public static final String ROCK = "r";

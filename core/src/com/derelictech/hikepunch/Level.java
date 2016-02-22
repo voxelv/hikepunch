@@ -25,7 +25,7 @@ public class Level {
 
     private Array<AbstractGameSprite> terrain;
     private Array<AbstractGameSprite> water;
-    private Array<AbstractGameSprite> trees;
+    private Array<TreeSprite> trees;
     private Array<AbstractGameSprite> diamonds;
 
     // Color Constants---------------------------Red-----------------Green---------------Blue----------------Alpha
@@ -42,7 +42,7 @@ public class Level {
 
         terrain = new Array<AbstractGameSprite>();
         water = new Array<AbstractGameSprite>();
-        trees = new Array<AbstractGameSprite>();
+        trees = new Array<TreeSprite>();
         diamonds = new Array<AbstractGameSprite>();
 
         terrain.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scaleFactor, scaleFactor));
@@ -72,7 +72,7 @@ public class Level {
             switch(currentPixel) {
                 case startColor:
                     if (player == null) {
-                        player = new PlayerSprite(x, y, scaleFactor);
+                        player = new PlayerSprite(world, x, y, scaleFactor);
                         shape = Box2DFactory.createBoxShape(
                                 scaleFactor*player.getWidth()/2.0f,
                                 scaleFactor*player.getHeight()/2.0f,
@@ -96,7 +96,7 @@ public class Level {
                 case grassColor:
                     s = new GrassSprite(x, y, scaleFactor);
                     shape = Box2DFactory.createBoxShape(
-                            scaleFactor*s.getWidth()/2.05f,
+                            scaleFactor*s.getWidth()/2.1f,
                             scaleFactor*s.getHeight()/2,
                             new Vector2(scaleFactor*s.getWidth()/2,scaleFactor*s.getHeight()/2),
                             0 // Rotation
@@ -114,7 +114,7 @@ public class Level {
                 case rockColor:
                     s = new RockSprite(x, y, scaleFactor);
                     shape = Box2DFactory.createBoxShape(
-                            scaleFactor*s.getWidth()/2.05f,
+                            scaleFactor*s.getWidth()/2.1f,
                             scaleFactor*s.getHeight()/2,
                             new Vector2(scaleFactor*s.getWidth()/2,scaleFactor*s.getHeight()/2),
                             0 // Rotation
@@ -138,7 +138,7 @@ public class Level {
                             0 // Rotation
                     );
                     fd = Box2DFactory.createFixture(shape, 0.5f, 0.4f, 0f, true);
-                    s.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y));
+                    s.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.WATER);
                     water.add(s);
                     break;
                 case treeColor:
@@ -152,7 +152,7 @@ public class Level {
                             0 // Rotation
                     );
                     fd = Box2DFactory.createFixture(shape, 10.0f, 5.0f, 0.0f, false);
-                    ts.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.GRASS);
+                    ts.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(x, y), Constants.USERDATA.GRASS);
                     shape = Box2DFactory.createTileLeftShape();
                     fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
                     ts.body.createFixture(fd);
@@ -174,6 +174,12 @@ public class Level {
         } // End Double For Loop
         if(player == null) {
             throw new NullPointerException("No Player Spawn in Level: " + filename);
+        }
+    }
+
+    public void updateTrees(float deltaTime) {
+        for(TreeSprite t : trees) {
+            t.update(deltaTime);
         }
     }
 
