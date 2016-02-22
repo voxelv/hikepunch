@@ -142,6 +142,25 @@ public class Level {
                     water.add(s);
                     break;
                 case treeColor:
+                    s = new TreeSprite(x, y, scaleFactor);
+                    TreeSprite ts;
+                    ts = (TreeSprite) s;
+                    shape = Box2DFactory.createBoxShape(
+                            scaleFactor*ts.getWidth()/2.05f,
+                            scaleFactor*ts.getHeight()/2,
+                            new Vector2(scaleFactor*ts.getWidth()/2,scaleFactor*ts.getHeight()/2),
+                            0 // Rotation
+                    );
+                    fd = Box2DFactory.createFixture(shape, 10.0f, 5.0f, 0.0f, false);
+                    ts.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.GRASS);
+                    shape = Box2DFactory.createTileLeftShape();
+                    fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
+                    ts.body.createFixture(fd);
+                    shape = Box2DFactory.createTileRightShape();
+                    fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
+                    ts.body.createFixture(fd);
+                    ts.setBodies(world);
+                    trees.add(ts);
                     break;
                 case diamondColor:
                     break;

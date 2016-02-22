@@ -21,6 +21,8 @@ public class Assets implements Disposable {
     public TextureRegion rock_tile;
     public TextureRegion stick;
     public TextureRegion tree;
+    public TextureRegion tree_trunk;
+    public TextureRegion tree_leaves;
     public TextureRegion water_tile;
 
     private Assets(){}
@@ -38,6 +40,8 @@ public class Assets implements Disposable {
         rock_tile = atlas.findRegion("rock_tile");
         stick = atlas.findRegion("stick");
         tree = atlas.findRegion("tree");
+        tree_trunk = atlas.findRegion("tree_trunk");
+        tree_leaves = atlas.findRegion("tree_leaves");
         water_tile = atlas.findRegion("water_tile");
     }
 
