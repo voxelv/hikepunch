@@ -11,6 +11,7 @@ public class Constants {
     public static final String LEVEL1 = "level1.png";
 
     public static final class USERDATA {
+        public static final String PLAYER = "p";
         public static final String PLAYER_FOOT_SENSOR = "pfs";
         public static final String GRASS = "g";
         public static final String WATER = "w";

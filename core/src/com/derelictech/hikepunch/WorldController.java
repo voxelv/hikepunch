@@ -23,7 +23,7 @@ public class WorldController extends InputAdapter{
     public World world;
 
     public WorldController() {
-        world = new World(new Vector2(0, -9.8f), true);
+        world = new World(new Vector2(0, -20.0f), true);
         level = new Level(Constants.LEVEL1, (1.0f/(Constants.TILE_PIXEL_WIDTH)), world);
         player = level.getPlayerSprite();
         contactListener = new HPContactListener(player);

@@ -1,15 +1,8 @@
 package com.derelictech.hikepunch.utils;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
-import com.badlogic.gdx.physics.box2d.World;
 
 
 /**
@@ -72,6 +65,18 @@ public class Box2DFactory {
         polygonShape.set(vertices);
 
         return polygonShape;
+    }
+
+    public static Shape createTileLeftShape() {
+        EdgeShape es = new EdgeShape();
+        es.set(0f, 0f, 0f, 1f);
+        return es;
+    }
+
+    public static Shape createTileRightShape() {
+        EdgeShape es = new EdgeShape();
+        es.set(1f, 1f, 0f, 1f);
+        return es;
     }
 
     public static Shape createTriangleShape(float halfWidth, float halfHeight) {

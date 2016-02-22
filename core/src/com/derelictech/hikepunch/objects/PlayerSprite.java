@@ -38,13 +38,13 @@ public class PlayerSprite extends AbstractGameSprite {
     private float timeAccumulator = 0;
     private boolean flipped = false;
 
-    private Vector2 jumpVector = new Vector2(0, 3.5f);
+    private Vector2 jumpVector = new Vector2(0, 7.0f);
     private boolean movingLeft = false;
     private boolean movingRight = false;
     private float maxXVelocityGround = 7.0f;
-    private float maxXVelocityAir = 3.5f;
+    private float maxXVelocityAir = 4.5f;
     private float maxXVelocity = maxXVelocityGround;
-    private float xMoveForce = 20.0f;
+    private float xMoveForce = 100.0f;
 
     private BobLimb bob_arm_right;
     private BobLimb bob_arm_left;
