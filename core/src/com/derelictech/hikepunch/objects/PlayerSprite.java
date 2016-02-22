@@ -58,9 +58,9 @@ public class PlayerSprite extends AbstractGameSprite {
     private BobLimb bob_leg_right;
     private BobLimb bob_leg_left;
 
-    public PlayerSprite(World world, float x, float y, float scale) {
+    public PlayerSprite(World w, float x, float y, float scale) {
         super(Assets.instance.bob, x, y, scale);
-        this.world = world;
+        this.world = w;
         this.scaleFactor = scale;
 
         shoulderJoint = new Vector2(4.5f*scale, 19.5f*scale);
@@ -77,8 +77,9 @@ public class PlayerSprite extends AbstractGameSprite {
                 new Vector2(scaleFactor*bob_arm_left.getWidth()/2, scaleFactor*bob_arm_left.getHeight()/2),
                 0 // Rotation
         );
-        FixtureDef fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
-        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(bob_arm_left.getX(), bob_arm_left.getY()));
+        FixtureDef fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
+        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(x + shoulderJoint.x , y + shoulderJoint.y));
+        System.out.println(x +" "+ y);
     }
 
     @Override
@@ -92,7 +93,7 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void update(float deltaTime) {
         setPosition(body.getPosition().x, body.getPosition().y);
-
+        //bob_arm_left.setPosition(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y);
 
         if(movingLeft ^ movingRight) {
             moveX();
@@ -129,6 +130,7 @@ public class PlayerSprite extends AbstractGameSprite {
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
+        bob_arm_left.body.setTransform(x + shoulderJoint.x - bob_arm_left.getOriginX() * scaleFactor, y + shoulderJoint.y - bob_arm_left.getOriginY() * scaleFactor, bob_arm_left.body.getAngle());
         bob_arm_left.setPosition(x + shoulderJoint.x, y + shoulderJoint.y);
         bob_arm_right.setPosition(x + shoulderJoint.x, y + shoulderJoint.y);
         bob_leg_left.setPosition(x + hipJoint.x, y + hipJoint.y);
@@ -173,5 +175,14 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void moveRight(boolean b) {
         movingRight = b;
+    }
+
+    public void punch(boolean b) {
+        if(b) {
+            bob_arm_left.body.setTransform(-2.5f*scaleFactor, -2.5f*scaleFactor, 90);
+        }
+        else {
+            bob_arm_left.body.setTransform(2.5f*scaleFactor, 2.5f*scaleFactor, -90);
+        }
     }
 }

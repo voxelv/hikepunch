@@ -84,7 +84,7 @@ public class Level {
                         player.body.setFixedRotation(true);
                         shape = Box2DFactory.createBoxShape(
                                 scaleFactor*player.getWidth()/2.5f,
-                                scaleFactor*player.getHeight()/20,
+                                scaleFactor*player.getHeight()/30,
                                 new Vector2(scaleFactor*player.getWidth()/2, 0),
                                 0 // Rotation
                         );
@@ -152,7 +152,7 @@ public class Level {
                             0 // Rotation
                     );
                     fd = Box2DFactory.createFixture(shape, 10.0f, 5.0f, 0.0f, false);
-                    ts.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(x, y), Constants.USERDATA.GRASS);
+                    ts.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.GRASS);
                     shape = Box2DFactory.createTileLeftShape();
                     fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
                     ts.body.createFixture(fd);

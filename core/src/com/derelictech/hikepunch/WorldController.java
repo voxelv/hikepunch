@@ -33,6 +33,30 @@ public class WorldController extends InputAdapter{
     }
 
     @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        switch(button) {
+            case Input.Buttons.LEFT:
+                player.punch(true);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        switch(button) {
+            case Input.Buttons.LEFT:
+                player.punch(false);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
     public boolean keyDown(int keycode) {
         switch(keycode) {
             case Input.Keys.A:

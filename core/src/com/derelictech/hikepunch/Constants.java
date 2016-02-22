@@ -13,6 +13,7 @@ public class Constants {
     public static final class USERDATA {
         public static final String PLAYER = "p";
         public static final String PLAYER_FOOT_SENSOR = "pfs";
+        public static final String PLAYER_ARM_SENSOR = "pas";
         public static final String GRASS = "g";
         public static final String TREE = "t";
         public static final String WATER = "w";

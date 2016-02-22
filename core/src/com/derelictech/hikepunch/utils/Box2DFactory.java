@@ -69,13 +69,13 @@ public class Box2DFactory {
 
     public static Shape createTileLeftShape() {
         EdgeShape es = new EdgeShape();
-        es.set(0f, 0f, 0f, 1f);
+        es.set(0f, 0.01f, 0f, 0.99f);
         return es;
     }
 
     public static Shape createTileRightShape() {
         EdgeShape es = new EdgeShape();
-        es.set(1f, 0f, 1f, 1f);
+        es.set(1f, 0.01f, 1f, 0.99f);
         return es;
     }
 
