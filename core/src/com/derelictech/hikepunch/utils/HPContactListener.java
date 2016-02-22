@@ -32,7 +32,7 @@ public class HPContactListener implements ContactListener {
             footTouchCount++;
             if(footTouchCount > 0) player.enableJump(true);
             player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
-            System.out.println("Foot CONTACT");
+            System.out.println("Foot CONTACT: " + footTouchCount);
         }
     }
 
@@ -51,6 +51,7 @@ public class HPContactListener implements ContactListener {
             footTouchCount--;
             if(footTouchCount > 0) player.enableJump(true);
             else player.enableJump(false);
+            System.out.println("Foot UNCONTACT: " + footTouchCount);
         }
 
     }

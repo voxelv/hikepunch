@@ -51,6 +51,17 @@ public class Level {
         layoutWidth = levelLayout.getWidth();
         layoutHeight = levelLayout.getHeight();
 
+        Shape levelLeftShape = Box2DFactory.createBoxShape(Constants.TILE_PIXEL_WIDTH*scaleFactor/2, Constants.VIEWPORT_HEIGHT, new Vector2(0, 0), 0);
+        FixtureDef levelLeftFixtureDef = Box2DFactory.createFixture(levelLeftShape, 100.0f, 0.0f, 0.0f, false);
+        Body levelLeftBound = Box2DFactory.createBody(world, BodyType.StaticBody, levelLeftFixtureDef, new Vector2(-scaleFactor*Constants.TILE_PIXEL_WIDTH/2, Constants.VIEWPORT_HEIGHT/2));
+
+        AbstractGameSprite s;
+        Shape shape;
+        FixtureDef fd;
+        Fixture f;
+
+        Vector2 playerPosition = null;
+
         int currentPixel;
         for(int layoutX = 0; layoutX < layoutWidth;  layoutX++) {
         for(int layoutY = 0; layoutY < layoutHeight; layoutY++) {
@@ -64,33 +75,10 @@ public class Level {
             }
             else y -= Gdx.graphics.getHeight() - (layoutHeight * Constants.TILE_PIXEL_WIDTH * scaleFactor);
 
-            AbstractGameSprite s;
-            Shape shape;
-            FixtureDef fd;
-            Fixture f;
-
             switch(currentPixel) {
                 case startColor:
-                    if (player == null) {
-                        player = new PlayerSprite(world, x, y, scaleFactor);
-                        shape = Box2DFactory.createBoxShape(
-                                scaleFactor*player.getWidth()/2.0f,
-                                scaleFactor*player.getHeight()/2.0f,
-                                new Vector2(scaleFactor*player.getWidth()/2,scaleFactor*player.getHeight()/2),
-                                0 // Rotation
-                        );
-                        fd = Box2DFactory.createFixture(shape, 1.0f, 1.0f, 0f, false);
-                        player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(x, y + 1), Constants.USERDATA.PLAYER);
-                        player.body.setFixedRotation(true);
-                        shape = Box2DFactory.createBoxShape(
-                                scaleFactor*player.getWidth()/2.5f,
-                                scaleFactor*player.getHeight()/30,
-                                new Vector2(scaleFactor*player.getWidth()/2, 0),
-                                0 // Rotation
-                        );
-                        fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
-                        f = player.body.createFixture(fd);
-                        f.setUserData(Constants.USERDATA.PLAYER_FOOT_SENSOR);
+                    if (playerPosition == null) {
+                        playerPosition = new Vector2(x, y);
                     }
                     break;
                 case grassColor:
@@ -172,9 +160,31 @@ public class Level {
             }
         } // End Inner For Loop
         } // End Double For Loop
-        if(player == null) {
+        if(playerPosition == null) {
             throw new NullPointerException("No Player Spawn in Level: " + filename);
         }
+
+        // Create Player after all others
+        player = new PlayerSprite(world, playerPosition.x, playerPosition.y, scaleFactor);
+        shape = Box2DFactory.createBoxShape(
+                scaleFactor*player.getWidth()/2.0f,
+                scaleFactor*player.getHeight()/2.0f,
+                new Vector2(scaleFactor*player.getWidth()/2,scaleFactor*player.getHeight()/2),
+                0 // Rotation
+        );
+        fd = Box2DFactory.createFixture(shape, 1.0f, 1.0f, 0f, false);
+        player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(playerPosition.x, playerPosition.y + 1), Constants.USERDATA.PLAYER);
+        player.body.setFixedRotation(true);
+        shape = Box2DFactory.createBoxShape(
+                scaleFactor*player.getWidth()/2.5f,
+                scaleFactor*player.getHeight()/30,
+                new Vector2(scaleFactor*player.getWidth()/2, 0),
+                0 // Rotation
+        );
+        fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
+        f = player.body.createFixture(fd);
+        f.setUserData(Constants.USERDATA.PLAYER_FOOT_SENSOR);
+        player.init();
     }
 
     public void updateTrees(float deltaTime) {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.derelictech.hikepunch.Assets;
 import com.derelictech.hikepunch.utils.Box2DFactory;
 
@@ -70,7 +71,9 @@ public class PlayerSprite extends AbstractGameSprite {
         bob_arm_left = new BobLimb(Assets.instance.bob_arm, x +  shoulderJoint.x, y + shoulderJoint.y, scale);
         bob_leg_right = new BobLimb(Assets.instance.bob_leg, x + hipJoint.x, y + hipJoint.y, scale);
         bob_leg_left = new BobLimb(Assets.instance.bob_leg, x + hipJoint.x, y + hipJoint.y, scale);
+    }
 
+    public void init() {
         Shape shape = Box2DFactory.createBoxShape(
                 scaleFactor*bob_arm_left.getWidth()/2,
                 scaleFactor*bob_arm_left.getHeight()/2,
@@ -78,8 +81,12 @@ public class PlayerSprite extends AbstractGameSprite {
                 0 // Rotation
         );
         FixtureDef fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
-        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(x + shoulderJoint.x , y + shoulderJoint.y));
-        System.out.println(x +" "+ y);
+        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(getX() + shoulderJoint.x , getY() + shoulderJoint.y));
+
+
+//        RevoluteJointDef jd = new RevoluteJointDef();
+//        jd.initialize(this.body, bob_arm_left.body, new Vector2(0, 0));
+//        world.createJoint(jd);
     }
 
     @Override
@@ -93,7 +100,7 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void update(float deltaTime) {
         setPosition(body.getPosition().x, body.getPosition().y);
-        //bob_arm_left.setPosition(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y);
+        bob_arm_left.setPosition(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y);
 
         if(movingLeft ^ movingRight) {
             moveX();
@@ -179,10 +186,10 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void punch(boolean b) {
         if(b) {
-            bob_arm_left.body.setTransform(-2.5f*scaleFactor, -2.5f*scaleFactor, 90);
+            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 90*(MathUtils.PI / 180f));
         }
         else {
-            bob_arm_left.body.setTransform(2.5f*scaleFactor, 2.5f*scaleFactor, -90);
+            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 0);
         }
     }
 }
