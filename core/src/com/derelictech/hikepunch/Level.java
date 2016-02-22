@@ -62,6 +62,28 @@ public class Level {
 
         Vector2 playerPosition = null;
 
+        // Create Player before all others
+        player = new PlayerSprite(world, -3, -3, scaleFactor);
+        shape = Box2DFactory.createBoxShape(
+                scaleFactor*player.getWidth()/2.0f,
+                scaleFactor*player.getHeight()/2.0f,
+                new Vector2(scaleFactor*player.getWidth()/2,scaleFactor*player.getHeight()/2),
+                0 // Rotation
+        );
+        fd = Box2DFactory.createFixture(shape, 1.0f, 1.0f, 0f, false);
+        player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(-3, -3 + 1), Constants.USERDATA.PLAYER);
+        player.body.setFixedRotation(true);
+        shape = Box2DFactory.createBoxShape(
+                scaleFactor*player.getWidth()/2.5f,
+                scaleFactor*player.getHeight()/30,
+                new Vector2(scaleFactor*player.getWidth()/2, 0),
+                0 // Rotation
+        );
+        fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
+        f = player.body.createFixture(fd);
+        f.setUserData(Constants.USERDATA.PLAYER_FOOT_SENSOR);
+        player.init();
+
         int currentPixel;
         for(int layoutX = 0; layoutX < layoutWidth;  layoutX++) {
         for(int layoutY = 0; layoutY < layoutHeight; layoutY++) {
@@ -164,27 +186,8 @@ public class Level {
             throw new NullPointerException("No Player Spawn in Level: " + filename);
         }
 
-        // Create Player after all others
-        player = new PlayerSprite(world, playerPosition.x, playerPosition.y, scaleFactor);
-        shape = Box2DFactory.createBoxShape(
-                scaleFactor*player.getWidth()/2.0f,
-                scaleFactor*player.getHeight()/2.0f,
-                new Vector2(scaleFactor*player.getWidth()/2,scaleFactor*player.getHeight()/2),
-                0 // Rotation
-        );
-        fd = Box2DFactory.createFixture(shape, 1.0f, 1.0f, 0f, false);
-        player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(playerPosition.x, playerPosition.y + 1), Constants.USERDATA.PLAYER);
-        player.body.setFixedRotation(true);
-        shape = Box2DFactory.createBoxShape(
-                scaleFactor*player.getWidth()/2.5f,
-                scaleFactor*player.getHeight()/30,
-                new Vector2(scaleFactor*player.getWidth()/2, 0),
-                0 // Rotation
-        );
-        fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
-        f = player.body.createFixture(fd);
-        f.setUserData(Constants.USERDATA.PLAYER_FOOT_SENSOR);
-        player.init();
+        // Set player position after finding where
+        player.body.setTransform(playerPosition.x, playerPosition.y, 0);
     }
 
     public void updateTrees(float deltaTime) {
