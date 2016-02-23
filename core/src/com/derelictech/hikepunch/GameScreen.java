@@ -18,7 +18,7 @@ public class GameScreen extends AbstractGameScreen {
 
     @Override
     public void show() {
-        worldController = new WorldController();
+        worldController = new WorldController(game);
         worldRenderer = new WorldRenderer(worldController);
         paused = false;
     }

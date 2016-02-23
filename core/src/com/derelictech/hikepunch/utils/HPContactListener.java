@@ -41,13 +41,27 @@ public class HPContactListener implements ContactListener {
         // Collision between Player Arm and TreeID
         if(userDataA.length() > 0 && userDataA.charAt(0) == Constants.USERDATA.TREE.charAt(0) &&
                 userDataB.equals(Constants.USERDATA.PLAYER_ARM_SENSOR)) {
-            System.out.println("TREE CONTACT: " + Integer.parseInt(userDataA.substring(1)));
             level.punchTree(Integer.parseInt(userDataA.substring(1)));
         }
         if(userDataB.length() > 0 && userDataB.charAt(0) == Constants.USERDATA.TREE.charAt(0) &&
                 userDataA.equals(Constants.USERDATA.PLAYER_ARM_SENSOR)) {
-            System.out.println("TREE CONTACT: " + Integer.parseInt(userDataB.substring(1)));
             level.punchTree(Integer.parseInt(userDataB.substring(1)));
+        }
+
+
+        // Collision between Player and Water
+        if((userDataA.equals(Constants.USERDATA.PLAYER) && userDataB.equals(Constants.USERDATA.WATER)) ||
+                (userDataB.equals(Constants.USERDATA.WATER) && userDataA.equals(Constants.USERDATA.PLAYER))) {
+            level.loose = true;
+            System.out.println("LOOSE#######################################################################");
+        }
+
+
+        // Collision between Player and Diamond
+        if((userDataA.equals(Constants.USERDATA.PLAYER) && userDataB.equals(Constants.USERDATA.DIAMOND)) ||
+                (userDataB.equals(Constants.USERDATA.DIAMOND) && userDataA.equals(Constants.USERDATA.PLAYER))) {
+            level.win = true;
+            System.out.println("WIN#######################################################################");
         }
     }
 
@@ -59,7 +73,6 @@ public class HPContactListener implements ContactListener {
         else userDataA = "";
         if(contact.getFixtureB().getUserData() instanceof String) userDataB = (String) contact.getFixtureB().getUserData();
         else userDataB = "";
-        System.out.println("CONTACT: " + userDataA + " " + userDataB);
 
         // Collision between Player Foot and Grass
         if((userDataA.equals(Constants.USERDATA.PLAYER_FOOT_SENSOR) && userDataB.equals(Constants.USERDATA.GRASS)) ||

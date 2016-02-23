@@ -3,6 +3,7 @@ package com.derelictech.hikepunch;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Disposable;
@@ -12,6 +13,8 @@ import com.derelictech.hikepunch.objects.PlayerSprite;
  * Created by Tim on 2/14/2016.
  */
 public class WorldRenderer implements Disposable{
+
+    Sprite instruct;
 
     OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
@@ -54,7 +57,7 @@ public class WorldRenderer implements Disposable{
         level.render(batch);
         batch.end();
 
-        debugRenderer.render(worldController.world, camera.combined);
+        //debugRenderer.render(worldController.world, camera.combined);
     }
 
     public void resize(int width, int height) {

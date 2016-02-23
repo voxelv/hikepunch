@@ -1,5 +1,6 @@
 package com.derelictech.hikepunch;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -19,10 +20,14 @@ public class WorldController extends InputAdapter{
     private Level level;
     private PlayerSprite player;
     private HPContactListener contactListener;
+    private Game game;
+
+    private float end_timer = 4;
 
     public World world;
 
-    public WorldController() {
+    public WorldController(Game g) {
+        game = g;
         world = new World(new Vector2(0, -20.0f), true);
         level = new Level(Constants.LEVEL1, (1.0f/(Constants.TILE_PIXEL_WIDTH)), world);
         player = level.getPlayerSprite();
@@ -99,6 +104,17 @@ public class WorldController extends InputAdapter{
         world.step(deltaTime, 6, 2);
         level.updateTrees(deltaTime);
         player.update(deltaTime);
+        if((level.win || level.loose)) {
+            end_timer -= deltaTime;
+        }
+        if(end_timer < 0) {
+            if(level.win) {
+                game.setScreen(new WinScreen(game));
+            }
+            else {
+                game.setScreen(new LooseScreen(game));
+            }
+        }
     }
 
     public Level getLevel() {

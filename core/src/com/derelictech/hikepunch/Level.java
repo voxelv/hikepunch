@@ -2,7 +2,9 @@ package com.derelictech.hikepunch;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -22,6 +24,16 @@ public class Level {
     private PlayerSprite player;
     private int layoutWidth;
     private int layoutHeight;
+
+    private class InstructionsSprite extends AbstractGameSprite {
+        public InstructionsSprite(float x, float y, float scale) {
+            super(Assets.instance.instructions, x, y, scale);
+        }
+    }
+    private InstructionsSprite instruct;
+
+    public boolean win = false;
+    public boolean loose = false;
 
     private Array<AbstractGameSprite> terrain;
     private Array<AbstractGameSprite> water;
@@ -46,6 +58,8 @@ public class Level {
         diamonds = new Array<AbstractGameSprite>();
 
         terrain.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scaleFactor, scaleFactor));
+
+        instruct = new InstructionsSprite(0, 10, scaleFactor/6);
 
         Pixmap levelLayout = new Pixmap(Gdx.files.internal("../level/" + filename));
         layoutWidth = levelLayout.getWidth();
@@ -140,6 +154,7 @@ public class Level {
                     terrain.add(s);
                     break;
                 case waterColor:
+                    y -= 0.2f; // Lower water level a tad
                     s = new WaterSprite(x, y, scaleFactor);
                     shape = Box2DFactory.createBoxShape(
                             scaleFactor*s.getWidth()/2,
@@ -174,6 +189,16 @@ public class Level {
                     treeID++;
                     break;
                 case diamondColor:
+                    s = new DiamondSprite(x, y, scaleFactor);
+                    shape = Box2DFactory.createBoxShape(
+                            scaleFactor*s.getWidth()/2,
+                            scaleFactor*s.getHeight()/2,
+                            new Vector2(scaleFactor*s.getWidth()/2,scaleFactor*s.getHeight()/2),
+                            0 // Rotation
+                    );
+                    fd = Box2DFactory.createFixture(shape, 0.5f, 0.4f, 0f, true);
+                    s.body = Box2DFactory.createBody(world, BodyType.StaticBody, fd, new Vector2(x, y), Constants.USERDATA.DIAMOND);
+                    diamonds.add(s);
                     break;
                 case 0x00FF: // Black, with alpha = 255
                     break;
@@ -190,6 +215,8 @@ public class Level {
         // Set player position after finding where
         player.body.setTransform(playerPosition.x, playerPosition.y, 0);
         player.init();
+
+        terrain.add(instruct);
     }
 
     public void updateTrees(float deltaTime) {
@@ -237,4 +264,5 @@ public class Level {
             }
         }
     }
+
 }

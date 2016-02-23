@@ -1,90 +1,111 @@
 
 pack.png
-size: 1024,512
+size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 bob
   rotate: false
-  xy: 1004, 323
+  xy: 2, 16
   size: 8, 30
   orig: 8, 30
   offset: 0, 0
   index: -1
 bob_arm
   rotate: false
-  xy: 1004, 309
+  xy: 2, 2
   size: 4, 12
   orig: 4, 12
   offset: 0, 0
   index: -1
 bob_leg
   rotate: false
-  xy: 1014, 341
+  xy: 936, 935
   size: 4, 12
   orig: 4, 12
   offset: 0, 0
   index: -1
 diamond
   rotate: false
-  xy: 2, 38
+  xy: 804, 795
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 grass_tile
   rotate: false
-  xy: 116, 174
+  xy: 918, 931
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+instructions
+  rotate: false
+  xy: 2, 347
+  size: 800, 600
+  orig: 800, 600
+  offset: 0, 0
+  index: -1
+loose
+  rotate: false
+  xy: 2, 48
+  size: 112, 134
+  orig: 112, 134
+  offset: 0, 0
+  index: -1
 mountains
   rotate: false
-  xy: 2, 192
+  xy: 2, 184
   size: 1000, 161
   orig: 1000, 161
   offset: 0, 0
   index: -1
 rock_tile
   rotate: false
-  xy: 2, 20
+  xy: 230, 166
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stick
   rotate: false
-  xy: 20, 38
+  xy: 12, 30
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tree
   rotate: false
-  xy: 2, 56
+  xy: 804, 813
   size: 112, 134
   orig: 112, 134
   offset: 0, 0
   index: -1
 tree_leaves
   rotate: false
-  xy: 116, 156
+  xy: 804, 777
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tree_trunk
   rotate: false
-  xy: 134, 174
+  xy: 822, 795
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 water_tile
   rotate: false
-  xy: 2, 2
+  xy: 918, 913
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+win
+  rotate: false
+  xy: 116, 48
+  size: 112, 134
+  orig: 112, 134
   offset: 0, 0
   index: -1
