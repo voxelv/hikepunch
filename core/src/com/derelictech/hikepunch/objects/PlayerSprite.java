@@ -46,13 +46,13 @@ public class PlayerSprite extends AbstractGameSprite {
 
     private World world;
 
-    private Vector2 jumpVector = new Vector2(0, 7.0f);
+    private Vector2 jumpVector = new Vector2(0, 15.0f);
     private boolean movingLeft = false;
     private boolean movingRight = false;
     private float maxXVelocityGround = 7.0f;
     private float maxXVelocityAir = 4.5f;
     private float maxXVelocity = maxXVelocityGround;
-    private float xMoveForce = 100.0f;
+    private float xMoveForce = 200.0f;
 
     private BobLimb bob_arm_right;
     private BobLimb bob_arm_left;
@@ -78,17 +78,22 @@ public class PlayerSprite extends AbstractGameSprite {
         Shape shape = Box2DFactory.createBoxShape(
                 scaleFactor*bob_arm_left.getWidth()/2,
                 scaleFactor*bob_arm_left.getHeight()/2,
-                new Vector2(scaleFactor*bob_arm_left.getWidth()/2, scaleFactor*bob_arm_left.getHeight()/2),
+                new Vector2(0,4.5f*scaleFactor),
                 0 // Rotation
         );
-        FixtureDef fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
+        FixtureDef fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
 
-        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.DynamicBody, fd, new Vector2(getX() + shoulderJoint.x , getY() + shoulderJoint.y), Constants.USERDATA.PLAYER_ARM_SENSOR);
+        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.DynamicBody, fd, new Vector2(this.getX(), this.getY()), Constants.USERDATA.PLAYER_ARM_SENSOR);
+        bob_arm_left.body.setFixedRotation(true);
 
-//        RevoluteJointDef jd = new RevoluteJointDef();
-//        jd.collideConnected = false;
-//        jd.initialize(this.body, bob_arm_left.body, new Vector2(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y));
-//        world.createJoint(jd);
+        RevoluteJointDef jd = new RevoluteJointDef();
+        jd.collideConnected = false;
+        jd.bodyA = bob_arm_left.body;
+        jd.bodyB = this.body;
+        jd.localAnchorA.set(bob_arm_left.getOriginX()*scaleFactor, bob_arm_left.getOriginY()*scaleFactor);
+        jd.localAnchorB.set(shoulderJoint.x, shoulderJoint.y);
+        jd.referenceAngle = 0;
+        world.createJoint(jd);
     }
 
     @Override
@@ -111,7 +116,6 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void update(float deltaTime) {
         setPosition(body.getPosition().x, body.getPosition().y);
-        bob_arm_left.setPosition(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y);
 
         if(movingLeft ^ movingRight) {
             moveX();
@@ -147,7 +151,7 @@ public class PlayerSprite extends AbstractGameSprite {
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        bob_arm_left.body.setTransform(x + shoulderJoint.x - bob_arm_left.getOriginX() * scaleFactor, y + shoulderJoint.y - bob_arm_left.getOriginY() * scaleFactor, bob_arm_left.body.getAngle());
+//        bob_arm_left.body.setTransform(x + shoulderJoint.x - bob_arm_left.getOriginX() * scaleFactor, y + shoulderJoint.y - bob_arm_left.getOriginY() * scaleFactor, bob_arm_left.body.getAngle());
         bob_arm_left.setPosition(x + shoulderJoint.x, y + shoulderJoint.y);
         bob_arm_right.setPosition(x + shoulderJoint.x, y + shoulderJoint.y);
         bob_leg_left.setPosition(x + hipJoint.x, y + hipJoint.y);

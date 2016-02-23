@@ -72,7 +72,7 @@ public class Level {
                 0 // Rotation
         );
         fd = Box2DFactory.createFixture(shape, 1.0f, 1.0f, 0f, false);
-        player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(-3, -3 + 1), Constants.USERDATA.PLAYER);
+        player.body = Box2DFactory.createBody(world, BodyType.DynamicBody, fd, new Vector2(5, 5 + 1), Constants.USERDATA.PLAYER);
         player.body.setFixedRotation(true);
         shape = Box2DFactory.createBoxShape(
                 scaleFactor*player.getWidth()/2.5f,
