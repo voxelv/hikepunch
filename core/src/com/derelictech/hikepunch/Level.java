@@ -57,13 +57,17 @@ public class Level {
         trees = new Array<TreeSprite>();
         diamonds = new Array<AbstractGameSprite>();
 
-        terrain.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scaleFactor, scaleFactor));
-
         instruct = new InstructionsSprite(0, 5, scaleFactor/8);
 
         Pixmap levelLayout = new Pixmap(Gdx.files.internal("../level/" + filename));
         layoutWidth = levelLayout.getWidth();
         layoutHeight = levelLayout.getHeight();
+        MountainsSprite m;
+        int xAccumulator = 0;
+        while(xAccumulator < layoutWidth) {
+            terrain.add(new MountainsSprite(xAccumulator, Constants.TILE_PIXEL_WIDTH * scaleFactor, scaleFactor));
+            xAccumulator += Assets.instance.mountains.getRegionWidth()*scaleFactor;
+        }
 
         Shape levelLeftShape = Box2DFactory.createBoxShape(Constants.TILE_PIXEL_WIDTH*scaleFactor/2, Constants.VIEWPORT_HEIGHT, new Vector2(0, 0), 0);
         FixtureDef levelLeftFixtureDef = Box2DFactory.createFixture(levelLeftShape, 100.0f, 0.0f, 0.0f, false);
