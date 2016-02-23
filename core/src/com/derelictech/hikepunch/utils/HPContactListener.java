@@ -36,6 +36,19 @@ public class HPContactListener implements ContactListener {
             if(footTouchCount > 0) player.enableJump(true);
             player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
         }
+
+
+        // Collision between Player Arm and TreeID
+        if(userDataA.length() > 0 && userDataA.charAt(0) == Constants.USERDATA.TREE.charAt(0) &&
+                userDataB.equals(Constants.USERDATA.PLAYER_ARM_SENSOR)) {
+            System.out.println("TREE CONTACT: " + Integer.parseInt(userDataA.substring(1)));
+            level.punchTree(Integer.parseInt(userDataA.substring(1)));
+        }
+        if(userDataB.length() > 0 && userDataB.charAt(0) == Constants.USERDATA.TREE.charAt(0) &&
+                userDataA.equals(Constants.USERDATA.PLAYER_ARM_SENSOR)) {
+            System.out.println("TREE CONTACT: " + Integer.parseInt(userDataB.substring(1)));
+            level.punchTree(Integer.parseInt(userDataB.substring(1)));
+        }
     }
 
     @Override
@@ -54,16 +67,6 @@ public class HPContactListener implements ContactListener {
             footTouchCount--;
             if(footTouchCount > 0) player.enableJump(true);
             else player.enableJump(false);
-        }
-
-        // Collision between Player Arm and TreeID
-        if(userDataA.equals(Constants.USERDATA.PLAYER_ARM_SENSOR) && userDataB.substring(0, 0).equals(Constants.USERDATA.TREE.substring(0, 0))) {
-            level.punchTree(Integer.parseInt(userDataB.substring(1)));
-            System.out.println("TREE CONTACT");
-        }
-        if(userDataB.substring(0, 0).equals(Constants.USERDATA.TREE.substring(0, 0)) && userDataA.equals(Constants.USERDATA.PLAYER_ARM_SENSOR)) {
-            level.punchTree(Integer.parseInt(userDataA.substring(1)));
-            System.out.println("TREE CONTACT");
         }
 
     }

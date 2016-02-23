@@ -193,8 +193,11 @@ public class Level {
     }
 
     public void updateTrees(float deltaTime) {
-        for(TreeSprite t : trees) {
-            t.update(deltaTime);
+        for(int i = 0; i < trees.size; i++) {
+            trees.get(i).update(world, deltaTime);
+            if(trees.get(i).deleted) {
+                trees.removeIndex(i);
+            }
         }
     }
 
@@ -230,7 +233,7 @@ public class Level {
     public void punchTree(int ID) {
         for(int i = 0; i < trees.size; i++) {
             if(trees.get(i).ID == ID) {
-                trees.removeIndex(i);
+                trees.get(i).delete = true;
             }
         }
     }

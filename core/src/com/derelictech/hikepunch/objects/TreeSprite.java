@@ -1,7 +1,6 @@
 package com.derelictech.hikepunch.objects;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -18,6 +17,8 @@ public class TreeSprite extends AbstractGameSprite {
     private Array<Body> bodies;
     private float scaleFactor;
     public int ID;
+    public boolean delete = false;
+    public boolean deleted = false;
 
 
     public TreeSprite(int ID, float x, float y, float scale) {
@@ -25,6 +26,7 @@ public class TreeSprite extends AbstractGameSprite {
         this.ID = ID;
         scaleFactor = scale;
         pieces = new Array<AbstractGameSprite>();
+        bodies = new Array<Body>();
         createPieces();
         System.out.println("Tree Created with ID: " + this.ID);
     }
@@ -100,6 +102,7 @@ public class TreeSprite extends AbstractGameSprite {
             );
             fd = Box2DFactory.createFixture(shape, 0.5f, 5.0f, 0.1f, false);
             s.body = Box2DFactory.createBody(world, BodyDef.BodyType.StaticBody, fd, new Vector2(s.getX(), s.getY()), Constants.USERDATA.TREE+ID);
+            bodies.add(s.body);
             shape = Box2DFactory.createTileLeftShape();
             fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, false);
             s.body.createFixture(fd);
@@ -117,10 +120,16 @@ public class TreeSprite extends AbstractGameSprite {
         }
     }
 
-    public void update(float deltaTime) {
-        for(AbstractGameSprite s : pieces) {
-            s.setPosition(s.body.getPosition().x, s.body.getPosition().y);
-            s.setRotation(s.body.getAngle()*180/MathUtils.PI);
+    public void update(World world, float deltaTime) {
+        if(delete) {
+
+            System.out.println("Deleting tree: " + ID);
+
+            for(Body b : bodies) {
+                world.destroyBody(b);
+            }
+            world.destroyBody(body);
+            deleted = true;
         }
     }
 }

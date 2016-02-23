@@ -17,7 +17,7 @@ import com.derelictech.hikepunch.utils.Box2DFactory;
 public class PlayerSprite extends AbstractGameSprite {
 
     private class BobLimb extends Sprite {
-        public Fixture fixture;
+        public Body body;
 
         public BobLimb(TextureRegion region, float x, float y, float scale) {
             super(region);
@@ -82,9 +82,8 @@ public class PlayerSprite extends AbstractGameSprite {
                 0 // Rotation
         );
         FixtureDef fd = Box2DFactory.createFixture(shape, 0.0f, 0.0f, 0.0f, true);
-        bob_arm_left.fixture = body.createFixture(fd);
 
-//        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.DynamicBody, fd, new Vector2(getX() + shoulderJoint.x , getY() + shoulderJoint.y), Constants.USERDATA.PLAYER_ARM_SENSOR);
+        bob_arm_left.body = Box2DFactory.createBody(world, BodyDef.BodyType.DynamicBody, fd, new Vector2(getX() + shoulderJoint.x , getY() + shoulderJoint.y), Constants.USERDATA.PLAYER_ARM_SENSOR);
 
 //        RevoluteJointDef jd = new RevoluteJointDef();
 //        jd.collideConnected = false;
@@ -112,6 +111,7 @@ public class PlayerSprite extends AbstractGameSprite {
 
     public void update(float deltaTime) {
         setPosition(body.getPosition().x, body.getPosition().y);
+        bob_arm_left.setPosition(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y);
 
         if(movingLeft ^ movingRight) {
             moveX();
@@ -147,6 +147,7 @@ public class PlayerSprite extends AbstractGameSprite {
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
+        bob_arm_left.body.setTransform(x + shoulderJoint.x - bob_arm_left.getOriginX() * scaleFactor, y + shoulderJoint.y - bob_arm_left.getOriginY() * scaleFactor, bob_arm_left.body.getAngle());
         bob_arm_left.setPosition(x + shoulderJoint.x, y + shoulderJoint.y);
         bob_arm_right.setPosition(x + shoulderJoint.x, y + shoulderJoint.y);
         bob_leg_left.setPosition(x + hipJoint.x, y + hipJoint.y);
@@ -194,17 +195,12 @@ public class PlayerSprite extends AbstractGameSprite {
     }
 
     public void punch(boolean b) {
-//        if(b) {
-//            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, -90*(MathUtils.PI / 180f));
-//        }
-//        else {
-//            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 0);
-//        }
         if(b) {
-            body.destroyFixture(bob_arm_left.fixture);
+            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, -90*(MathUtils.PI / 180f));
         }
         else {
-            //bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 0);
+            bob_arm_left.body.setTransform(bob_arm_left.body.getPosition().x, bob_arm_left.body.getPosition().y, 0);
         }
+
     }
 }
