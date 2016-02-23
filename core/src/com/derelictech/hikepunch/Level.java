@@ -59,7 +59,7 @@ public class Level {
 
         terrain.add(new MountainsSprite(0, Constants.TILE_PIXEL_WIDTH * scaleFactor, scaleFactor));
 
-        instruct = new InstructionsSprite(0, 10, scaleFactor/6);
+        instruct = new InstructionsSprite(0, 5, scaleFactor/8);
 
         Pixmap levelLayout = new Pixmap(Gdx.files.internal("../level/" + filename));
         layoutWidth = levelLayout.getWidth();
